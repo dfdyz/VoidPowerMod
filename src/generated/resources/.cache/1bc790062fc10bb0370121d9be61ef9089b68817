@@ -1,0 +1,11 @@
+// 1.20.1	2024-07-22T11:32:20.0694392	Registrate Provider for void_power [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+b451bc228d03df036451a504b7750a8c2cd0f8c2 assets/void_power/blockstates/engine_controller.json
+d8bcc1af0d60f01d39953b5bce7874e42d3fd1b2 assets/void_power/blockstates/void_engine.json
+b5095e5e902fe9c4823ebe5dcd7c792672305989 assets/void_power/lang/en_ud.json
+2bdd5fb4cbcf0facea796ac162072c98ba57a3d9 assets/void_power/lang/en_us.json
+185daf2d983545129fe466769fcca29df98c872e assets/void_power/models/item/engine_controller.json
+fa51b3f3dc0352297a166f32e4a32ceee877a6d8 assets/void_power/models/item/void_engine.json
+59eee50837b4d1341a2de342478262452d231b7e data/minecraft/tags/blocks/mineable/axe.json
+59eee50837b4d1341a2de342478262452d231b7e data/minecraft/tags/blocks/mineable/pickaxe.json
+ebb91597bdda119fcbc16546850bb1a8dc5ef00a data/void_power/loot_tables/blocks/engine_controller.json
+7f0e1d8131fba7854d5364844c42b4781764f49e data/void_power/loot_tables/blocks/void_engine.json

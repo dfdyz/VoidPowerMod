@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CAC",
+    "EMP",
+    "CAC"
+  ],
+  "key": {
+    "E": {
+      "item": "create:electron_tube"
+    },
+    "A": {
+      "item": "minecraft:ender_pearl"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
+    },
+    "C": {
+      "item": "create:andesite_casing"
+    },
+    "M": {
+      "item": "create:mechanical_bearing"
+    }
+  },
+  "result": {
+    "item": "void_power:void_engine"
+  }
+}

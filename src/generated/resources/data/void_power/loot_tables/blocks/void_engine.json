@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "void_power:void_engine"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "void_power:blocks/void_engine"
+}

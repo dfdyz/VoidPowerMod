@@ -1,0 +1,13 @@
+{
+    "parent": "block/cube",
+    "rendertype": "minecraft:cutout",
+    "textures": {
+        "particle": "#front",
+        "down": "#top",
+        "up": "#top",
+        "north": "#front",
+        "east": "#side",
+        "south": "#back",
+        "west": "#side"
+    }
+}

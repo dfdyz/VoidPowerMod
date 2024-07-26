@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "void_power:block/void_engine/block",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "void_power:block/void_engine/block"
+    },
+    "facing=south": {
+      "model": "void_power:block/void_engine/block",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "void_power:block/void_engine/block",
+      "y": 270
+    }
+  }
+}

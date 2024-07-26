@@ -1,0 +1,10 @@
+[
+  {
+    "block": "void_power:void_engine",
+    "mass": 500.0
+  },
+  {
+    "block": "void_power:engine_controller",
+    "mass": 2000.0
+  }
+]
