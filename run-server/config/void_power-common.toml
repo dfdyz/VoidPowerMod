@@ -1,7 +1,0 @@
-#Engine cost stress per rpm.
-#Range: 0.0 ~ 3.4028234663852886E38
-EngineStressPerRPM = 8.0
-#The weight that can be driven of per stress*rpm cost.
-#Range: 0.0 ~ 3.4028234663852886E38
-EngineMassPerStress = 400.0
-
