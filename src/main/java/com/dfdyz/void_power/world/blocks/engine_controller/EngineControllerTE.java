@@ -79,6 +79,7 @@ public class EngineControllerTE extends SmartBlockEntity {
             ec.addController(this);
             qfa.Enabled = ec.canDrive();
         }
+
     }
 
     public P_EngineController getPeripheral(){

@@ -26,6 +26,9 @@ public class MixinPlugin implements IMixinConfigPlugin {
         if(res){
             System.out.println("[VoidPowerMixinPlugin] Apply " + mixinClassName + " -> " + targetClassName);
         }
+        else {
+            System.out.println("[VoidPowerMixinPlugin] Skip " + mixinClassName + " -> " + targetClassName);
+        }
         return res;
     }
 

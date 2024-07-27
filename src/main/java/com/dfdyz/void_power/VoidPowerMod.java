@@ -10,6 +10,8 @@ import com.mojang.logging.LogUtils;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import dan200.computercraft.shared.computer.core.ServerContext;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -70,6 +72,10 @@ public class VoidPowerMod
 
     private void clientSetup(FMLClientSetupEvent event)
     {
+        /*
+        ItemBlockRenderTypes.setRenderLayer(VPBlocks.HOLOGRAM_SCREEN_BLOCK.get(), (renderType -> {
+            return renderType == RenderType.cutout() || renderType == RenderType.translucent();
+        }));*/
         // Some client setup code
         //LOGGER.info("HELLO FROM CLIENT SETUP");
         //LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());

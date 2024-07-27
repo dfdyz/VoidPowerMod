@@ -1,22 +1,23 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "compatibilityLevel": "JAVA_17",
-  "package": "com.dfdyz.void_power.mixin",
-  "plugin": "com.dfdyz.void_power.mixin.MixinPlugin",
   "client": [
     "MixinMonitorHighlightRenderer"
   ],
+  "compatibilityLevel": "JAVA_17",
+  "injector": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8",
   "mixins": [
     "IMonitorTEAccessor",
     "INetTermWrapper",
     "MixinComputerRegistry",
     "MixinNetworkTerminal",
+    "MixinPeripheralProxyTE_Kt",
     "MixinTerminal",
     "MixinTweakedControllerTE"
   ],
-  "injector": {
-    "defaultRequire": 1
-  },
-  "refmap": "mixins.void_power.refmap.json"
+  "package": "com.dfdyz.void_power.mixin",
+  "plugin": "com.dfdyz.void_power.mixin.MixinPlugin",
+  "refmap": "mixins.void_power.refmap.json",
+  "required": true
 }

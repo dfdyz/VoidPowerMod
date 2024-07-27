@@ -30,6 +30,11 @@ public class VoidEngineBlock extends HorizontalKineticBlock implements IBE<VoidE
     }
 
     @Override
+    public boolean skipRendering(BlockState p_60532_, BlockState p_60533_, Direction p_60534_) {
+        return super.skipRendering(p_60532_, p_60533_, p_60534_);
+    }
+
+    @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockReader, BlockPos pos, CollisionContext context) {
         return VPShapes.VOID_ENGINE.get(state.getValue(HORIZONTAL_FACING)) ;
     }

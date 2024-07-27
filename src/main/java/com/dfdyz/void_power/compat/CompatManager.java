@@ -14,6 +14,7 @@ public class CompatManager {
 
     static {
         mixin_modid.put("MixinTweakedControllerTE", "create_tweaked_controllers");
+        mixin_modid.put("MixinPeripheralProxyTE_Kt", "peripheralworks");
     }
 
 

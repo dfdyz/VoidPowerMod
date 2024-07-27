@@ -6,6 +6,7 @@ import com.simibubi.create.foundation.utility.Components;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
@@ -21,7 +22,7 @@ public class VPCreativeTabs {
                     .title(Components.translatable("itemGroup."+ VoidPowerMod.MODID +".main"))
                     .withTabsBefore(AllCreativeModeTabs.BASE_CREATIVE_TAB.getKey())
                     .icon(() -> {
-                        return new ItemStack(VPBlocks.VOID_ENGINE.asItem());
+                        return new ItemStack(Items.STICK);
                     })
                     .displayItems((params, output) -> {
                         List<ItemStack> items = VoidPowerMod.REGISTRATE.getAll(Registries.ITEM)

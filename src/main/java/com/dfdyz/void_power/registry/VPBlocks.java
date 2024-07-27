@@ -9,10 +9,12 @@ import com.simibubi.create.foundation.data.SharedProperties;
 import com.simibubi.create.foundation.data.TagGen;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.level.block.Blocks;
 
 import static com.dfdyz.void_power.VoidPowerMod.REGISTRATE;
 import static com.simibubi.create.foundation.data.ModelGen.customItemModel;
 
+@SuppressWarnings("removal")
 public class VPBlocks {
 
     static {
@@ -29,6 +31,8 @@ public class VPBlocks {
             .transform(customItemModel())
             .register();
 
+    //Blocks.GLASS
+
     public static final BlockEntry<EngineControllerBlock> ENGINE_CONTROLLER_BLOCK = REGISTRATE.block(EngineControllerBlock.ID, EngineControllerBlock::new)
             .initialProperties(SharedProperties::stone)
             .transform(TagGen.axeOrPickaxe())
@@ -40,11 +44,11 @@ public class VPBlocks {
             .register();
 
 
-    @SuppressWarnings("removal")
     public static final BlockEntry<HologramScreenBlock> HOLOGRAM_SCREEN_BLOCK = REGISTRATE.block(HologramScreenBlock.ID, HologramScreenBlock::new)
             .initialProperties(SharedProperties::stone)
             .transform(TagGen.axeOrPickaxe())
             //.blockstate(BlockStateGen.horizontalBlockProvider(true))
+            //.addLayer(() -> RenderType::solid)
             .addLayer(() -> RenderType::translucent)
             //.transform(BlockStressDefaults.setImpact(8.0))
             .item()

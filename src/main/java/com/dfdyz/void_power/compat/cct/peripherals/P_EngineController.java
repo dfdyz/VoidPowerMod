@@ -60,8 +60,9 @@ public class P_EngineController implements IPeripheral {
     }
 
     public void PushEvent(PhysShipImpl physShip){
+        LuaPhysShip.ShipPhysStateSnapshot snapshot = LuaPhysShip.createSnapshot(physShip);
         computers.forEach((c) -> {
-            c.queueEvent("phys_tick", new Object[]{new LuaPhysShip(physShip)});
+            c.queueEvent("phys_tick", new Object[]{new LuaPhysShip(snapshot, physShip)});
         });
     }
 

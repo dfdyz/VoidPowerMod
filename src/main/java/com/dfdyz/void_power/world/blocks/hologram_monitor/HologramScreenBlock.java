@@ -9,6 +9,7 @@ import dan200.computercraft.shared.peripheral.monitor.MonitorEdgeState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -18,10 +19,16 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("deprecation")
 public class HologramScreenBlock extends MonitorBlock {
     public static final String ID = "hologram_screen";
 
-    @SuppressWarnings("deprecation")
+
+    @Override
+    public @NotNull RenderShape getRenderShape(BlockState blockState) {
+        return RenderShape.MODEL;
+    }
+
     @Override
     public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter blockReader, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         Direction direction = state.getValue(ORIENTATION);

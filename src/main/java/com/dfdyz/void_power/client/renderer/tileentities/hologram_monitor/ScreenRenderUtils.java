@@ -2,8 +2,6 @@ package com.dfdyz.void_power.client.renderer.tileentities.hologram_monitor;
 
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import dan200.computercraft.client.render.RenderTypes;
 import dan200.computercraft.client.render.text.DirectFixedWidthFontRenderer;
 import dan200.computercraft.client.render.text.FixedWidthFontRenderer;
 import dan200.computercraft.core.terminal.Palette;
@@ -101,11 +99,12 @@ public class ScreenRenderUtils {
         Palette palette = terminal.getPalette();
         int height = terminal.getHeight();
         drawBackground(emitter, x, y - topMarginSize, terminal.getBackgroundColourLine(0), palette, leftMarginSize, rightMarginSize, topMarginSize, noBG_color);
-        drawBackground(emitter, x, y + (float)(height * 9), terminal.getBackgroundColourLine(height - 1), palette, leftMarginSize, rightMarginSize, bottomMarginSize, noBG_color);
-        ;
+        drawBackground(emitter, x, y + (float) (height * 9), terminal.getBackgroundColourLine(height - 1), palette, leftMarginSize, rightMarginSize, bottomMarginSize, noBG_color);;
 
-        for(int i = 0; i < height; ++i) {
-            float rowY = y + (float)(9 * i);
+
+
+        for (int i = 0; i < height; ++i) {
+            float rowY = y + (float) (9 * i);
             drawBackground(emitter, x, rowY, terminal.getBackgroundColourLine(i), palette, leftMarginSize, rightMarginSize, 9.0F, noBG_color);
         }
 
@@ -114,7 +113,7 @@ public class ScreenRenderUtils {
     public static void drawCursor(DirectFixedWidthFontRenderer.QuadEmitter emitter, float x, float y, Terminal terminal) {
         if (FixedWidthFontRenderer.isCursorVisible(terminal)) {
             byte[] colour = terminal.getPalette().getRenderColours(15 - terminal.getTextColour());
-            drawChar(emitter, x + (float)(terminal.getCursorX() * 6), y + (float)(terminal.getCursorY() * 9), 95, colour);
+            drawChar(emitter, x + (float) (terminal.getCursorX() * 6), y + (float) (terminal.getCursorY() * 9), 95, colour);
         }
 
     }
@@ -126,6 +125,7 @@ public class ScreenRenderUtils {
     private static void quad(DirectFixedWidthFontRenderer.QuadEmitter buffer, float x1, float y1, float x2, float y2, float z, byte[] rgba, float u1, float v1, float u2, float v2) {
         buffer.quad(x1, y1, x2, y2, z, rgba, u1, v1, u2, v2);
     }
+
 
     static void quad(ByteBuffer buffer, float x1, float y1, float x2, float y2, float z, byte[] rgba, float u1, float v1, float u2, float v2) {
         int position = buffer.position();
@@ -142,7 +142,7 @@ public class ScreenRenderUtils {
                 MemoryUtil.memPutByte(addr + 12L, rgba[0]);
                 MemoryUtil.memPutByte(addr + 13L, rgba[1]);
                 MemoryUtil.memPutByte(addr + 14L, rgba[2]);
-                MemoryUtil.memPutByte(addr + 15L, (byte)-1);
+                MemoryUtil.memPutByte(addr + 15L, (byte)255);
                 MemoryUtil.memPutFloat(addr + 16L, u1);
                 MemoryUtil.memPutFloat(addr + 20L, v1);
                 MemoryUtil.memPutShort(addr + 24L, (short)240);
@@ -153,7 +153,7 @@ public class ScreenRenderUtils {
                 MemoryUtil.memPutByte(addr + 40L, rgba[0]);
                 MemoryUtil.memPutByte(addr + 41L, rgba[1]);
                 MemoryUtil.memPutByte(addr + 42L, rgba[2]);
-                MemoryUtil.memPutByte(addr + 43L, (byte)-1);
+                MemoryUtil.memPutByte(addr + 43L, (byte)255);
                 MemoryUtil.memPutFloat(addr + 44L, u1);
                 MemoryUtil.memPutFloat(addr + 48L, v2);
                 MemoryUtil.memPutShort(addr + 52L, (short)240);
@@ -164,7 +164,7 @@ public class ScreenRenderUtils {
                 MemoryUtil.memPutByte(addr + 68L, rgba[0]);
                 MemoryUtil.memPutByte(addr + 69L, rgba[1]);
                 MemoryUtil.memPutByte(addr + 70L, rgba[2]);
-                MemoryUtil.memPutByte(addr + 71L, (byte)-1);
+                MemoryUtil.memPutByte(addr + 71L, (byte)255);
                 MemoryUtil.memPutFloat(addr + 72L, u2);
                 MemoryUtil.memPutFloat(addr + 76L, v2);
                 MemoryUtil.memPutShort(addr + 80L, (short)240);
@@ -175,7 +175,7 @@ public class ScreenRenderUtils {
                 MemoryUtil.memPutByte(addr + 96L, rgba[0]);
                 MemoryUtil.memPutByte(addr + 97L, rgba[1]);
                 MemoryUtil.memPutByte(addr + 98L, rgba[2]);
-                MemoryUtil.memPutByte(addr + 99L, (byte)-1);
+                MemoryUtil.memPutByte(addr + 99L, (byte)255);
                 MemoryUtil.memPutFloat(addr + 100L, u2);
                 MemoryUtil.memPutFloat(addr + 104L, v1);
                 MemoryUtil.memPutShort(addr + 108L, (short)240);
@@ -187,6 +187,9 @@ public class ScreenRenderUtils {
         }
     }
 
+
+
+
     // Empty Terminal
     private static void quad(FixedWidthFontRenderer.QuadEmitter c, float x1, float y1, float x2, float y2, float z, byte[] rgba, float u1, float v1, float u2, float v2, int light) {
         Matrix4f poseMatrix = c.poseMatrix();
@@ -195,6 +198,8 @@ public class ScreenRenderUtils {
         byte g = rgba[1];
         byte b = rgba[2];
         byte a = rgba[3];
+
+        // pos col tex light_map normal pa
         consumer.vertex(poseMatrix, x1, y1, z).color(r, g, b, a).uv(u1, v1).uv2(light).endVertex();
         consumer.vertex(poseMatrix, x1, y2, z).color(r, g, b, a).uv(u1, v2).uv2(light).endVertex();
         consumer.vertex(poseMatrix, x2, y2, z).color(r, g, b, a).uv(u2, v2).uv2(light).endVertex();
