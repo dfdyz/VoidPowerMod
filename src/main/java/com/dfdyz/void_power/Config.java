@@ -44,6 +44,13 @@ public class Config
             .comment("Reset input state of tweaked controller block after player left.")
             .define("RESET_CONTROLLER_WHEN_LEFT", true);
 
+    private static final ForgeConfigSpec.IntValue HOLOGRAM_RES_X_MAX = BUILDER
+            .comment("Max width can set for a hologram.")
+            .defineInRange("HOLOGRAM_WIDTH_MAX", 1024, 128, 4096);
+
+    private static final ForgeConfigSpec.IntValue HOLOGRAM_RES_Y_MAX = BUILDER
+            .comment("Max height can set for a hologram..")
+            .defineInRange("HOLOGRAM_HEIGHT_MAX", 1024, 128, 4096);
 
     static final ForgeConfigSpec SPEC = BUILDER.build();
 
@@ -52,6 +59,9 @@ public class Config
     public static double DefaultMinPeriodFactor = 1;
     public static boolean ForceUseVanillaShader = false;
     public static boolean ResetControllerWhileLeft = true;
+
+    public static int holo_w_mx = 1024;
+    public static int holo_h_mx = 1024;
 
     private static boolean validateItemName(final Object obj)
     {
@@ -66,6 +76,10 @@ public class Config
         DefaultMinPeriodFactor = CC_DEFAULT_MIN_PERIOD_FACTOR.get().doubleValue();
         ForceUseVanillaShader = SCREEN_FORCED_USE_VANILLA_SHADER.get().booleanValue();
         ResetControllerWhileLeft = RESET_CONTROLLER_WHEN_LEFT.get().booleanValue();
+
+        holo_w_mx = HOLOGRAM_RES_X_MAX.get();
+        holo_h_mx = HOLOGRAM_RES_Y_MAX.get();
+
     }
 
 }

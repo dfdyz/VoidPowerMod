@@ -46,9 +46,7 @@ public class HologramRenderer extends SafeBlockEntityRenderer<HologramTE> {
 
         stack.translate(0, 1, 0);
 
-
         Matrix4f model = new Matrix4f();
-
         model.translate(te.offx, te.offy, te.offz);
         model.rotate(Axis.YP.rotationDegrees(te.rotYaw));
         model.rotate(Axis.XP.rotationDegrees(te.rotPitch));

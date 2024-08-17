@@ -2,8 +2,10 @@ package com.dfdyz.void_power.network;
 
 import com.dfdyz.void_power.VoidPowerMod;
 import com.dfdyz.void_power.network.CP.CP_HologramInputEvent;
+import com.dfdyz.void_power.network.CP.CP_HologramRename;
 import com.dfdyz.void_power.network.CP.CP_HologramUpdateRequest;
 import com.dfdyz.void_power.network.SP.SP_HologramPoseUpdate;
+import com.dfdyz.void_power.network.SP.SP_HologramRename;
 import com.dfdyz.void_power.network.SP.SP_HologramUpdate;
 import com.dfdyz.void_power.network.SP.SP_UpdateGlassScreen;
 import net.minecraft.resources.ResourceLocation;
@@ -81,6 +83,15 @@ public class PacketManager {
         CHANNEL.registerMessage(index++, CP_HologramInputEvent.class,
                 CP_HologramInputEvent::encode, CP_HologramInputEvent::decode,
                 CP_HologramInputEvent::handler, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+
+
+        CHANNEL.registerMessage(index++, SP_HologramRename.class,
+                SP_HologramRename::encode, SP_HologramRename::decode,
+                SP_HologramRename::handler, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+
+        CHANNEL.registerMessage(index++, CP_HologramRename.class,
+                CP_HologramRename::encode, CP_HologramRename::decode,
+                CP_HologramRename::handler, Optional.of(NetworkDirection.PLAY_TO_SERVER));
         //CHANNEL.registerMessage(index++, SP_UpdateAnimatedPiano.class, SP_UpdateAnimatedPiano::encode, SP_UpdateAnimatedPiano::decode, SP_UpdateAnimatedPiano::onClientMessageReceived, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
         //CHANNEL.registerMessage(index++, CP_UpdateLampColor.class, CP_UpdateLampColor::encode, CP_UpdateLampColor::decode, CP_UpdateLampColor::onServerMessageReceived, Optional.of(NetworkDirection.PLAY_TO_SERVER));
         //CHANNEL.registerMessage(index++, SP_UpdateLampColor.class, SP_UpdateLampColor::encode, SP_UpdateLampColor::decode, SP_UpdateLampColor::onClientMessageReceived, Optional.of(NetworkDirection.PLAY_TO_CLIENT));

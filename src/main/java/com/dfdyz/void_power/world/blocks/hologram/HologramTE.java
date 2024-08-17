@@ -5,9 +5,11 @@ import com.dfdyz.void_power.client.screen_cache.IScreenCache;
 import com.dfdyz.void_power.compat.cct.peripherals.P_HologramPeripheral;
 import com.dfdyz.void_power.menu.HologramMenu;
 import com.dfdyz.void_power.network.CP.CP_HologramInputEvent;
+import com.dfdyz.void_power.network.CP.CP_HologramRename;
 import com.dfdyz.void_power.network.CP.CP_HologramUpdateRequest;
 import com.dfdyz.void_power.network.PacketManager;
 import com.dfdyz.void_power.network.SP.SP_HologramPoseUpdate;
+import com.dfdyz.void_power.network.SP.SP_HologramRename;
 import com.dfdyz.void_power.network.SP.SP_HologramUpdate;
 import com.dfdyz.void_power.utils.Debug;
 import com.dfdyz.void_power.utils.ParamUtils;
@@ -37,6 +39,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.UUID;
 
 public class HologramTE extends SmartBlockEntity implements MenuProvider {
     public Behavior behavior;
@@ -53,6 +56,8 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider {
     public final SyncLocker<Boolean> transformDirty = new SyncLocker<>(false);
 
     public final SyncLocker<Boolean> needSync = new SyncLocker<>(true);
+
+    public String name = UUID.randomUUID().toString();
 
     public IScreenCache renderCache;
 
@@ -220,6 +225,14 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider {
         PacketManager.sendToPlayer(new SP_HologramPoseUpdate(this), player);
     }
 
+    public void Rename(String str){
+        name = str;
+        if(level == null) return;
+        if(!level.isClientSide){
+            PacketManager.sendToAllPlayerTrackingThisBlock(new SP_HologramRename(this), this);
+        }
+    }
+
     @Override
     public @NotNull Component getDisplayName() {
         return Component.literal("Hologram");
@@ -267,7 +280,13 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider {
             if(nbt.contains("initcol")){
                 te.initColor = nbt.getInt("initcol");
             }
+
+            if(nbt.contains("_name")){
+                te.name = nbt.getString("_name");
+            }
         }
+
+
 
         @Override
         public void write(CompoundTag nbt, boolean clientPacket) {
@@ -285,6 +304,8 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider {
             nbt.putFloat("scalex", te.scalex);
             nbt.putFloat("scaley", te.scaley);
             nbt.putInt("initcol", te.initColor);
+
+            nbt.putString("_name", te.name);
         }
 
         @Override

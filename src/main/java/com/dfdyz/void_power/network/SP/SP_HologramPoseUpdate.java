@@ -72,7 +72,7 @@ public class SP_HologramPoseUpdate {
             if(be instanceof HologramTE te){
                 te.offx = msg.x;
                 te.offy = msg.y;
-                te.offz = msg.x;
+                te.offz = msg.z;
                 te.rotYaw = msg.yaw;
                 te.rotPitch = msg.pitch;
                 te.rotRoll = msg.roll;

@@ -2,8 +2,12 @@ package com.dfdyz.void_power.client.gui;
 
 import com.dfdyz.void_power.client.gui.widget.HologramTerminalWidget;
 import com.dfdyz.void_power.menu.HologramMenu;
+import com.dfdyz.void_power.network.CP.CP_HologramRename;
+import com.dfdyz.void_power.network.PacketManager;
 import com.dfdyz.void_power.world.blocks.hologram.HologramTE;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -15,8 +19,10 @@ public class HologramGUI extends Screen implements MenuAccess<HologramMenu> {
     HologramTE te;
     HologramTerminalWidget htw;
 
-    float terminal_scale = 1;
+    EditBox name_editor;
+    Button set_name;
 
+    float terminal_scale = 1;
     final HologramMenu menu;
 
     public HologramGUI(HologramMenu menu, Inventory inventory, Component p_97743_) {
@@ -49,11 +55,29 @@ public class HologramGUI extends Screen implements MenuAccess<HologramMenu> {
         );
     }
 
-
     @Override
     protected void init() {
         super.init();
         htw = addRenderableWidget(getTerminal());
+
+        name_editor = addRenderableWidget(
+                new EditBox(font, width / 2 - 128 - 20, htw.getY() - 30, 254, 16,
+                Component.literal("NAME"))
+        );
+
+        name_editor.setValue(te.name);
+
+        set_name = addRenderableWidget(Button.builder(Component.literal("Set"), this::ChangeName)
+                .pos(width / 2 + 128-20, htw.getY() - 31)
+                .size(40,18)
+                .build());
+
+        setInitialFocus(htw);
+    }
+
+    public void ChangeName(Button b){
+        te.Rename(name_editor.getValue());
+        PacketManager.sendToServer(new CP_HologramRename(te));
     }
 
     @Override
@@ -71,6 +95,9 @@ public class HologramGUI extends Screen implements MenuAccess<HologramMenu> {
             htw.setY((height - h) / 2);
             htw.setHeight(h);
             htw.setWidth(w);
+
+            name_editor.setY(htw.getY() - 30);
+            set_name.setY(htw.getY() - 31);
         }
         //htw.setFocused(true);
     }

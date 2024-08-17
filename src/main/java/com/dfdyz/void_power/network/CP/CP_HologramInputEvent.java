@@ -10,6 +10,9 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
+import static com.dfdyz.void_power.utils.ByteUtils.decodeString;
+import static com.dfdyz.void_power.utils.ByteUtils.encodeString;
+
 public class CP_HologramInputEvent {
     public BlockPos te;
     public String name;
@@ -23,23 +26,6 @@ public class CP_HologramInputEvent {
         this.te = te.getBlockPos();
         this.name = event;
         this.param = param;
-    }
-
-    static void encodeString(FriendlyByteBuf buf, String str){
-        short len = (short) Math.min(str.length(), Short.MAX_VALUE);
-        buf.writeShort(len);
-        for (int i = 0; i < len; i++) {
-            buf.writeChar(str.charAt(i));
-        }
-    }
-
-    static String decodeString(FriendlyByteBuf buf){
-        String str = "";
-        int len = buf.readShort();
-        for (int i = 0; i < len; ++i){
-            str += buf.readChar();
-        }
-        return str;
     }
 
     public static CP_HologramInputEvent decode(FriendlyByteBuf buf) {

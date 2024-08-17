@@ -1,5 +1,6 @@
 package com.dfdyz.void_power.compat.cct.peripherals;
 
+import com.dfdyz.void_power.Config;
 import com.dfdyz.void_power.network.PacketManager;
 import com.dfdyz.void_power.network.SP.SP_HologramUpdate;
 import com.dfdyz.void_power.utils.Debug;
@@ -45,8 +46,9 @@ public class P_HologramPeripheral implements IPeripheral{
     }
 
     @LuaFunction
-    public final void Resize(int w, int h){
+    public final void Resize(int w, int h) throws LuaException {
         synchronized (SYNC_LOCK){
+            if(w > Config.holo_w_mx || h > Config.holo_h_mx) throw new LuaException("Max resolution is %d x %d, out of range.".formatted(Config.holo_w_mx, Config.holo_h_mx));
             te.resize(w, h);
             dirty_x = te.width;
             dirty_ex = 0;
@@ -60,7 +62,15 @@ public class P_HologramPeripheral implements IPeripheral{
         te.initColor = ParamUtils.convertColor(param.getInt(0));
     }
 
-    static int DefCol = -1;
+    @LuaFunction
+    public String GetName(){
+        return te.name;
+    }
+
+    @LuaFunction
+    public void Rename(String n){
+        te.Rename(n);
+    }
 
     @LuaFunction
     public final void Blit(IArguments param) throws LuaException {

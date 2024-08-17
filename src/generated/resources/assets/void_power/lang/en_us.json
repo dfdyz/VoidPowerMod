@@ -2,6 +2,7 @@
   "block.void_power.engine_controller": "Engine Controller",
   "block.void_power.void_engine": "Void Engine",
   "block.void_power.glass_screen":"GlassScreen",
+  "block.void_power.hologram":"Hologram",
   "itemGroup.void_power.main": "Void Power",
   "gui.void_power.terminal" : "HOLOGRAM"
 }
