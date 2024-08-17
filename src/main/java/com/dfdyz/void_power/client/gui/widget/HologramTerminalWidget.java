@@ -55,7 +55,7 @@ public class HologramTerminalWidget extends AbstractWidget {
     public boolean keyReleased(int key, int scancode, int modifiers) {
         if (key >= 0 && this.keysDown.get(key)) {
             this.keysDown.set(key, false);
-            te.SendInputPack("vp_key_released", key);
+            te.SendInputPack("vp_key_released", te.name, key);
         }
 
         return true;
@@ -64,7 +64,7 @@ public class HologramTerminalWidget extends AbstractWidget {
     @Override
     public boolean charTyped(char ch, int modifiers) {
         if (ch >= ' ' && ch <= '~' || ch >= 160 && ch <= 255) {
-            te.SendInputPack("vp_char", Character.toString(ch));
+            te.SendInputPack("vp_char", te.name, Character.toString(ch));
         }
         return true;
     }
@@ -79,7 +79,7 @@ public class HologramTerminalWidget extends AbstractWidget {
         } else {
             if (key >= 0) {
                 this.keysDown.set(key);
-                te.SendInputPack("vp_key_pressed", key);
+                te.SendInputPack("vp_key_pressed", te.name, key);
 
             }
             return true;
@@ -88,7 +88,7 @@ public class HologramTerminalWidget extends AbstractWidget {
 
     private void paste() {
         String clipboard = StringUtil.normaliseClipboardString(Minecraft.getInstance().keyboardHandler.getClipboard());
-        te.SendInputPack("vp_paste", clipboard);
+        te.SendInputPack("vp_paste", te.name, clipboard);
 
     }
 
@@ -99,14 +99,14 @@ public class HologramTerminalWidget extends AbstractWidget {
         if (!focused) {
             for(int key = 0; key < this.keysDown.size(); ++key) {
                 if (this.keysDown.get(key)) {
-                    te.SendInputPack("vp_key_released", key);
+                    te.SendInputPack("vp_key_released", te.name, key);
                 }
             }
 
             this.keysDown.clear();
 
             if (this.lastMouseButton >= 0) {
-                te.SendInputPack("vp_mouse_clicked", lastMouseButton + 1, lastMouseX, lastMouseY);
+                te.SendInputPack("vp_mouse_clicked", te.name, lastMouseButton + 1, lastMouseX, lastMouseY);
 
                 this.lastMouseButton = -1;
             }
@@ -125,7 +125,7 @@ public class HologramTerminalWidget extends AbstractWidget {
             int pxX = (int)Math.floor((mouseX - this.getX()) / width * te.width);
             int pxY = (int)Math.floor((mouseY - this.getY()) / height * te.high);
 
-            te.SendInputPack("vp_mouse_clicked", button + 1, pxX, pxY);
+            te.SendInputPack("vp_mouse_clicked", te.name, button + 1, pxX, pxY);
 
             this.lastMouseButton = button;
             this.lastMouseX = pxX;
@@ -144,7 +144,7 @@ public class HologramTerminalWidget extends AbstractWidget {
             int pxY = (int)Math.floor((mouseY - this.getY()) / height * te.high);
 
             if (this.lastMouseButton == button) {
-                te.SendInputPack("vp_mouse_released", button + 1, pxX, pxY);
+                te.SendInputPack("vp_mouse_released", te.name, button + 1, pxX, pxY);
 
                 this.lastMouseButton = -1;
             }
@@ -166,7 +166,7 @@ public class HologramTerminalWidget extends AbstractWidget {
         } else if (delta != 0.0) {
             int pxX = (int)Math.floor((mouseX - this.getX()) / width * te.width);
             int pxY = (int)Math.floor((mouseY - this.getY()) / height * te.high);
-            te.SendInputPack("vp_mouse_scrolled", delta, pxX, pxY);
+            te.SendInputPack("vp_mouse_scrolled", te.name, delta, pxX, pxY);
 
             this.lastMouseX = pxX;
             this.lastMouseY = pxY;
