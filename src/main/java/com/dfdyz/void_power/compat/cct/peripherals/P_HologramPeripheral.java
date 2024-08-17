@@ -18,6 +18,7 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import org.jetbrains.annotations.Nullable;
 import org.valkyrienskies.core.impl.shadow.M;
 import org.valkyrienskies.core.impl.shadow.S;
+import org.yaml.snakeyaml.error.Mark;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -156,8 +157,7 @@ public class P_HologramPeripheral implements IPeripheral{
                 }
                 Font.CharMat cm = Font.getMat(ch);
                 int edgeR = Math.min(ay + cm.bitmap.length, te.high);
-
-
+                MarkDirtyXYWH(tmpx, ay, cm.width, cm.bitmap.length);
                 for (int y = Math.max(ay, 0); y < edgeR; y++) {
                     int offD = y * te.width;
                     int edgeD = Math.min(te.width, tmpx + cm.width);
@@ -169,7 +169,6 @@ public class P_HologramPeripheral implements IPeripheral{
                 }
 
                 tmpx += cm.width;
-                MarkDirtyXYWH(tmpx, ay, cm.width, cm.bitmap.length);
             }
         }
         else if(mode == 2){ // blend
@@ -184,7 +183,7 @@ public class P_HologramPeripheral implements IPeripheral{
                 }
                 Font.CharMat cm = Font.getMat(ch);
                 int edgeR = Math.min(ay + cm.bitmap.length, te.high);
-
+                MarkDirtyXYWH(tmpx, ay, cm.width, cm.bitmap.length);
                 for (int y = Math.max(ay, 0); y < edgeR; y++) {
                     int offD = y * te.width;
                     int edgeD = Math.min(te.width, tmpx + cm.width);
@@ -194,9 +193,7 @@ public class P_HologramPeripheral implements IPeripheral{
                         }
                     }
                 }
-
                 tmpx += cm.width;
-                MarkDirtyXYWH(tmpx, ay, cm.width, cm.bitmap.length);
             }
         }
 
@@ -289,6 +286,9 @@ public class P_HologramPeripheral implements IPeripheral{
         } catch (LuaException e) {
             throw new RuntimeException(e);
         }
+        MarkDirtyXYWH(ax, ay, w, h);
+        System.out.println(dirty_ex+" "+dirty_ey);
+        //System.out.println(ax + " " + ay + " " + (ax+w) + " " + (ay+h));
     }
 
     final Set<IComputerAccess> computers = Sets.newConcurrentHashSet();
@@ -333,6 +333,7 @@ public class P_HologramPeripheral implements IPeripheral{
                     dirty_ey-dirty_y,
                     buffer
             );
+            //Debug.PrintMsg(pack);
             dirty_x = te.width;
             dirty_ex = 0;
             dirty_y = te.high;
@@ -353,10 +354,11 @@ public class P_HologramPeripheral implements IPeripheral{
             dirty_y = Math.min(y, dirty_y);
             dirty_ex = Math.max(x+w, dirty_ex);
             dirty_ey = Math.max(y+h, dirty_ey);
+
             dirty_x = Math.max(dirty_x, 0);
             dirty_y = Math.max(dirty_y, 0);
-            dirty_ex = Math.min(te.width, dirty_ex);
-            dirty_ey = Math.min(te.high, dirty_ey);
+            dirty_ex = Math.min(dirty_ex, te.width);
+            dirty_ey = Math.min(dirty_ey, te.high);
         }
     }
 

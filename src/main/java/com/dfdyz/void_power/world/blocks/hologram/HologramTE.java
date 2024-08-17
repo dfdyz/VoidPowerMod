@@ -9,6 +9,7 @@ import com.dfdyz.void_power.network.CP.CP_HologramUpdateRequest;
 import com.dfdyz.void_power.network.PacketManager;
 import com.dfdyz.void_power.network.SP.SP_HologramPoseUpdate;
 import com.dfdyz.void_power.network.SP.SP_HologramUpdate;
+import com.dfdyz.void_power.utils.Debug;
 import com.dfdyz.void_power.utils.ParamUtils;
 import com.dfdyz.void_power.utils.SyncLocker;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -140,10 +141,12 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider {
 
     public void BlitBuffer(int ax, int ay, int w, int h, int[] src){
         int[] buffer = this.buffer;
-        for(int y = Math.max(ay, 0); y < high && y < h; ++y){
+        int edgeD = Math.min(high, ay+h);
+        for(int y = Math.max(ay, 0); y < edgeD; ++y){
             int offO = (y - ay) * w;
             int offD = y * width;
-            for(int x = Math.max(ax, 0); x < width && x < w; ++x){
+            int edgeR = Math.min(width, ax+w);
+            for(int x = Math.max(ax, 0); x < edgeR; ++x){
                 buffer[offD + x] = src[offO + x - ax];
             }
         }

@@ -59,7 +59,7 @@ public class VPBlocks {
             .initialProperties(SharedProperties::stone)
             .transform(TagGen.axeOrPickaxe())
             .blockstate(BlockStateGen.horizontalBlockProvider(true))
-            .addLayer(() -> RenderType::translucent)
+            //.addLayer(() -> RenderType::translucent)
             //.transform(BlockStressDefaults.setImpact(8.0))
             .item()
             .transform(customItemModel())

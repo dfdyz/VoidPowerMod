@@ -62,7 +62,6 @@ public class HologramRenderer extends SafeBlockEntityRenderer<HologramTE> {
         n.mul(nor);
         VertexConsumer buf = bufferSource.getBuffer(RenderType.entityTranslucent(tex));
 
-
         float z = 0F;
         float w = te.width / 32.f * te.scalex;
         float h = te.high / 32.f * te.scaley;

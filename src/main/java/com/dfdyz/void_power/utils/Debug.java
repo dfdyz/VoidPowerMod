@@ -22,7 +22,7 @@ public class Debug {
 
     public static void PrintMsg(SP_HologramUpdate msg){
         System.out.println(msg.x + " " + msg.y +  " " + msg.w + " " + msg.h + (msg.lazy ? "Lazy" : "Full"));
-        PrintIntArray(msg.buffer, msg.w);
+        //PrintIntArray(msg.buffer, msg.w);
     }
 
     public static void PrintMap(Map<?,?> map){
