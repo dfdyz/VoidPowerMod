@@ -1,7 +1,11 @@
 package com.dfdyz.void_power.network;
 
 import com.dfdyz.void_power.VoidPowerMod;
-import com.dfdyz.void_power.network.SP.SP_UpdateHologram;
+import com.dfdyz.void_power.network.CP.CP_HologramInputEvent;
+import com.dfdyz.void_power.network.CP.CP_HologramUpdateRequest;
+import com.dfdyz.void_power.network.SP.SP_HologramPoseUpdate;
+import com.dfdyz.void_power.network.SP.SP_HologramUpdate;
+import com.dfdyz.void_power.network.SP.SP_UpdateGlassScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -16,9 +20,11 @@ import java.util.Optional;
 public class PacketManager {
     public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder
             .named(new ResourceLocation(VoidPowerMod.MODID, VoidPowerMod.MODID+"_channel")).networkProtocolVersion(() -> {
-                return "1.1";
+                return PacketManager.VERSION;
             })
-            .clientAcceptedVersions("1.1"::equals).serverAcceptedVersions("1.1"::equals).simpleChannel();
+            .clientAcceptedVersions(PacketManager.VERSION::equals).serverAcceptedVersions(PacketManager.VERSION::equals).simpleChannel();
+
+    public static final String VERSION = "1.2";
 
     public PacketManager() {
     }
@@ -56,7 +62,25 @@ public class PacketManager {
     private static int index = 0;
 
     public static void Init(){
-        CHANNEL.registerMessage(index++, SP_UpdateHologram.class, SP_UpdateHologram::encode, SP_UpdateHologram::decode, SP_UpdateHologram::handler, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        CHANNEL.registerMessage(index++, SP_UpdateGlassScreen.class,
+                SP_UpdateGlassScreen::encode, SP_UpdateGlassScreen::decode,
+                SP_UpdateGlassScreen::handler, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+
+        CHANNEL.registerMessage(index++, SP_HologramUpdate.class,
+                SP_HologramUpdate::encode, SP_HologramUpdate::decode,
+                SP_HologramUpdate::handler, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+
+        CHANNEL.registerMessage(index++, SP_HologramPoseUpdate.class,
+                SP_HologramPoseUpdate::encode, SP_HologramPoseUpdate::decode,
+                SP_HologramPoseUpdate::handler, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+
+        CHANNEL.registerMessage(index++, CP_HologramUpdateRequest.class,
+                CP_HologramUpdateRequest::encode, CP_HologramUpdateRequest::decode,
+                CP_HologramUpdateRequest::handler, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+
+        CHANNEL.registerMessage(index++, CP_HologramInputEvent.class,
+                CP_HologramInputEvent::encode, CP_HologramInputEvent::decode,
+                CP_HologramInputEvent::handler, Optional.of(NetworkDirection.PLAY_TO_SERVER));
         //CHANNEL.registerMessage(index++, SP_UpdateAnimatedPiano.class, SP_UpdateAnimatedPiano::encode, SP_UpdateAnimatedPiano::decode, SP_UpdateAnimatedPiano::onClientMessageReceived, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
         //CHANNEL.registerMessage(index++, CP_UpdateLampColor.class, CP_UpdateLampColor::encode, CP_UpdateLampColor::decode, CP_UpdateLampColor::onServerMessageReceived, Optional.of(NetworkDirection.PLAY_TO_SERVER));
         //CHANNEL.registerMessage(index++, SP_UpdateLampColor.class, SP_UpdateLampColor::encode, SP_UpdateLampColor::decode, SP_UpdateLampColor::onClientMessageReceived, Optional.of(NetworkDirection.PLAY_TO_CLIENT));

@@ -6,6 +6,7 @@ import com.dfdyz.void_power.registry.VPCreativeTabs;
 import com.dfdyz.void_power.registry.VPItems;
 import com.dfdyz.void_power.registry.VPTileEntities;
 import com.dfdyz.void_power.utils.CCUtils;
+import com.dfdyz.void_power.utils.font.Font;
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import dan200.computercraft.shared.computer.core.ServerContext;
@@ -34,11 +35,10 @@ public class VoidPowerMod
     // Define mod id in a common place for everything to reference
     public static final String MODID = "void_power";
     // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
     // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
 
     public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(VoidPowerMod.MODID);
-
 
     public VoidPowerMod()
     {
@@ -67,6 +67,7 @@ public class VoidPowerMod
     {
         // Some common setup code
         event.enqueueWork(PacketManager::Init);
+        event.enqueueWork(Font::Init);
         //LOGGER.info("HELLO FROM COMMON SETUP");
     }
 

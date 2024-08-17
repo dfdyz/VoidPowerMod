@@ -154,6 +154,11 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+
+    repositories {
+        maven { url = "https://maven.bawnorton.com/releases" }
+    }
+
     mavenCentral()
 }
 
@@ -200,8 +205,17 @@ dependencies {
     implementation fg.deobf("libs:peripheralium-forge:1.20.1-0.6.15")
     implementation fg.deobf("libs:peripheralworks-forge-1.20.1:1.4.3")
 
+    compileOnly(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.6"))
+    implementation(jarJar("com.bawnorton.mixinsquared:mixinsquared-forge:0.2.0-beta.6")) {
+        jarJar.ranged(it, "[0.2.0-beta.6,)")
+    }
+
     // Tweaked Controllers dependencies
     implementation fg.deobf("curse.maven:create-tweaked-controllers-898849:5206625")
+
+    // Toms peripheral
+    //implementation fg.deobf("curse.maven:toms-peripheral-931210:5265063")
+
 
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'

@@ -6,5 +6,9 @@
   {
     "block": "void_power:engine_controller",
     "mass": 2000.0
+  },
+  {
+    "block": "void_power:glass_screen",
+    "mass": 200.0
   }
 ]

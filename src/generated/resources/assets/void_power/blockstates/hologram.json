@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "void_power:block/hologram/block",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "void_power:block/hologram/block"
+    },
+    "facing=south": {
+      "model": "void_power:block/hologram/block",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "void_power:block/hologram/block",
+      "y": 270
+    }
+  }
+}

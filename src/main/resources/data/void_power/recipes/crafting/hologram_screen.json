@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " D ",
+    " M ",
+    "   "
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "M": {
+      "item": "computercraft:monitor_advanced"
+    }
+  },
+  "result": {
+    "count": 1,
+    "item": "void_power:glass_screen"
+  }
+}

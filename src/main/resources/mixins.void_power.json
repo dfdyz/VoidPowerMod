@@ -10,7 +10,9 @@
   "mixins": [
     "IMonitorTEAccessor",
     "INetTermWrapper",
+    "MixinBugFixUtils_Kt",
     "MixinComputerRegistry",
+    "MixinComputerThread",
     "MixinNetworkTerminal",
     "MixinPeripheralProxyTE_Kt",
     "MixinTerminal",

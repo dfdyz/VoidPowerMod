@@ -2,6 +2,7 @@ package com.dfdyz.void_power.events;
 
 
 import com.dfdyz.void_power.VoidPowerMod;
+import com.dfdyz.void_power.client.renderer.VPRenderTypes;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.DefaultedVertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -20,12 +21,6 @@ import java.io.IOException;
 )
 public class ClientRegisterEvent {
 
-    static ShaderInstance textShader;
-
-    public static ShaderInstance text(){
-        return textShader;
-    }
-
     @SubscribeEvent
     public static void registerShaders(RegisterShadersEvent event) throws IOException {
         event.registerShader(
@@ -34,9 +29,10 @@ public class ClientRegisterEvent {
                         DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP
                 ),
                 (s) -> {
-                    textShader = s;
+                    VPRenderTypes.textShader = s;
                 });
     }
+
 
 
 

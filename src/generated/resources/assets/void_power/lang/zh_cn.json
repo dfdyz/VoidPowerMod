@@ -1,0 +1,7 @@
+{
+  "block.void_power.engine_controller": "引擎控制器(电脑外设)",
+  "block.void_power.void_engine": "虚空引擎",
+  "block.void_power.glass_screen":"玻璃屏幕(电脑外设)",
+  "itemGroup.void_power.main": "虚空动力",
+  "gui.void_power.terminal" : "HOLOGRAM"
+}

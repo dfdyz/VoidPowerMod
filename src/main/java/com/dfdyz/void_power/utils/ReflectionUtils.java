@@ -1,10 +1,13 @@
 package com.dfdyz.void_power.utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 public class ReflectionUtils {
 
-    public static <T> T GetField(Class clazz, String fieldname){
+    public static <T> T GetField(Class<?> clazz, String fieldname){
         T val = null;
         try{
             Field field = clazz.getDeclaredField(fieldname);
@@ -38,5 +41,7 @@ public class ReflectionUtils {
             throw new RuntimeException(e);
         }
     }
+
+
 
 }

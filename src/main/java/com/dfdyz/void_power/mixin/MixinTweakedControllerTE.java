@@ -1,6 +1,7 @@
 package com.dfdyz.void_power.mixin;
 
 
+import com.dfdyz.void_power.Config;
 import com.getitemfromblock.create_tweaked_controllers.block.TweakedLecternControllerBlockEntity;
 import com.getitemfromblock.create_tweaked_controllers.controller.ControllerRedstoneOutput;
 import net.minecraft.world.entity.player.Player;
@@ -19,7 +20,8 @@ public abstract class MixinTweakedControllerTE {
 
     @Inject(method = "stopUsing", at = @At("HEAD"), remap = false)
     public void ClearStatePatch(Player player, CallbackInfo ci){
-        output.Clear();
+        if(Config.ResetControllerWhileLeft)
+            output.Clear();
     }
 
 }
