@@ -35,21 +35,28 @@ public class HologramGUI extends Screen implements MenuAccess<HologramMenu> {
 
     float GetScale(){
         float w = 0.5f,h = 0.25f;
-        if (te.high <= 64) h = 2;
-        else if (te.high <= 128) h = 1;
-        else if (te.high <= 256) h = 0.5f;
+        
+        int wi = te.getWidth();
+        int hi = te.getHeight();
+        
+        
+        if (hi <= 64) h = 2;
+        else if (hi <= 128) h = 1;
+        else if (hi <= 256) h = 0.5f;
 
-        if (te.width <= 64) w = 4;
-        else if (te.width <= 128) w = 2;
-        else if (te.width <= 256) w = 1;
+        if (wi <= 64) w = 4;
+        else if (wi <= 128) w = 2;
+        else if (wi <= 256) w = 1;
 
         return Math.min(w, h);
     }
 
     HologramTerminalWidget getTerminal(){
         terminal_scale = GetScale();
-        int w = (int) (te.width * terminal_scale);
-        int h = (int) (te.high * terminal_scale);
+        int wi = te.getWidth();
+        int hi = te.getHeight();
+        int w = (int) (wi * terminal_scale);
+        int h = (int) (hi * terminal_scale);
         return addRenderableWidget(
                 new HologramTerminalWidget(te, (width - w) / 2, (height - h) / 2, w, h)
         );
@@ -61,14 +68,14 @@ public class HologramGUI extends Screen implements MenuAccess<HologramMenu> {
         htw = addRenderableWidget(getTerminal());
 
         name_editor = addRenderableWidget(
-                new EditBox(font, width / 2 - 128 - 20, htw.getY() - 30, 254, 16,
+                new EditBox(font, width / 2 - 128 - 20, 1, 254, 16,
                 Component.literal("NAME"))
         );
 
         name_editor.setValue(te.name);
 
         set_name = addRenderableWidget(Button.builder(Component.literal("Set"), this::ChangeName)
-                .pos(width / 2 + 128-20, htw.getY() - 31)
+                .pos(width / 2 + 128-20, 1)
                 .size(40,18)
                 .build());
 
@@ -89,15 +96,22 @@ public class HologramGUI extends Screen implements MenuAccess<HologramMenu> {
         }
         if(htw.ShouldResize()){
             terminal_scale = GetScale();
-            int w = (int) (te.width * terminal_scale);
-            int h = (int) (te.high * terminal_scale);
+            int w = (int) (te.getWidth() * terminal_scale);
+            int h = (int) (te.getHeight() * terminal_scale);
             htw.setX((width - w) / 2);
             htw.setY((height - h) / 2);
             htw.setHeight(h);
             htw.setWidth(w);
 
-            name_editor.setY(htw.getY() - 30);
-            set_name.setY(htw.getY() - 31);
+            if(htw.getY() + 29 < set_name.getHeight()){
+                name_editor.setY(htw.getY() - 30);
+                set_name.setY(htw.getY() - 31);
+            }
+            else {
+                name_editor.setY(1);
+                set_name.setY(1);
+            }
+
         }
         //htw.setFocused(true);
     }

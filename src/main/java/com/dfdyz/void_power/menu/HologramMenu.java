@@ -51,6 +51,9 @@ public class HologramMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(@NotNull Player player) {
-        return te != null && !te.isRemoved() && te.canPlayerUse(player);
+        return te != null &&
+                te.getLevel() != null &&
+                te.getLevel().getBlockEntity(te.getBlockPos()) == te
+                && !te.isRemoved();
     }
 }

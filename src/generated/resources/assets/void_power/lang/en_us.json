@@ -3,6 +3,7 @@
   "block.void_power.void_engine": "Void Engine",
   "block.void_power.glass_screen":"GlassScreen",
   "block.void_power.hologram":"Hologram",
+  "item.void_power.vr_glasses": "VR Glasses",
   "itemGroup.void_power.main": "Void Power",
   "gui.void_power.terminal" : "HOLOGRAM"
 }

@@ -10,17 +10,14 @@ import com.google.common.collect.Sets;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.shared.computer.core.ServerComputer;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4dc;
-import org.joml.Quaterniondc;
-import org.joml.Vector3d;
-import org.joml.Vector4d;
+import org.joml.*;
+import org.joml.primitives.AABBi;
 import org.valkyrienskies.core.api.ships.ServerShip;
-import org.valkyrienskies.core.api.ships.properties.ShipInertiaData;
 import org.valkyrienskies.core.impl.game.ships.PhysShipImpl;
 
+import java.lang.Math;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -62,7 +59,7 @@ public class P_EngineController implements IPeripheral {
     public void PushEvent(PhysShipImpl physShip){
         LuaPhysShip.ShipPhysStateSnapshot snapshot = LuaPhysShip.createSnapshot(physShip);
         computers.forEach((c) -> {
-            c.queueEvent("phys_tick", new Object[]{new LuaPhysShip(snapshot, physShip)});
+            c.queueEvent("phys_tick", new Object[]{new LuaPhysShip(snapshot, physShip, te)});
         });
     }
 
@@ -195,7 +192,7 @@ public class P_EngineController implements IPeripheral {
             return CCUtils.dumpVec3(te.getShip().getTransform().getPositionInWorld());
         }
         return CCUtils.dumpVec3(0,0,0);
-    }
+    }//▀▄
 
     private List<List<Double>> getRotationMatrix(ServerShip ship){
         Matrix4dc transform = ship.getTransform().getShipToWorld();
@@ -268,4 +265,46 @@ public class P_EngineController implements IPeripheral {
             applier.applyRotDependentForceToPos(new Vector3d(fx,fy,fz), new Vector3d(px,py,pz));
         }
     }
+
+    @LuaFunction
+    public boolean isStatic(){
+        if(te.hasShip()){
+            return te.getShip().isStatic();
+        }
+        return true;
+    }
+
+    @LuaFunction
+    public Map<String, Double> getScale(){
+        if(te.hasShip()){
+            Vector3d s = te.getShip().getShipToWorld().getScale(new Vector3d());
+            return CCUtils.dumpVec3(s);
+        }
+        return null;
+    }
+
+    @LuaFunction
+    public Map<String, Double> getSize(){
+        if(te.hasShip()){
+            var aabb = te.getShip().getShipAABB();
+            if(aabb == null) aabb = new AABBi(0, 0, 0, 0, 0, 0);
+            return CCUtils.dumpVec3(
+                    aabb.maxX() - aabb.minX(),
+                    aabb.maxY() - aabb.minY(),
+                    aabb.maxZ() - aabb.minZ()
+            );
+        }
+        return null;
+    }
+
+    @LuaFunction
+    public Map<String, Double> getShipCenter(){ //getShipyardPosition
+        if(te.hasShip()){
+            Vector3dc s = te.getShip().getTransform().getPositionInShip();
+            return CCUtils.dumpVec3(s);
+        }
+        return null;
+    }
+
+
 }

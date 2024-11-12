@@ -1,0 +1,35 @@
+{
+  "type": "create:mechanical_crafting",
+  "acceptMirrored": false,
+  "key": {
+    "I": {
+      "item": "create:iron_sheet"
+    },
+    "E": {
+      "item": "create:electron_tube"
+    },
+    "P": {
+      "item": "create:powered_latch"
+    },
+    "B": {
+      "item": "minecraft:beacon"
+    },
+    "D": {
+      "item": "create:industrial_iron_block"
+    },
+    "G": {
+      "item": "create:tiled_glass"
+    }
+  },
+  "pattern": [
+    "DIGID",
+    "IEBEI",
+    "IPPPI",
+    "IPPPI",
+    "DDDDD"
+  ],
+  "result": {
+    "count": 2,
+    "item": "void_power:hologram"
+  }
+}

@@ -16,9 +16,12 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.energy.IEnergyStorage;
 
 public class VoidEngineBlock extends HorizontalKineticBlock implements IBE<VoidEngineTE> {
+
     public static final String ID = "void_engine";
+
     public VoidEngineBlock(Properties properties) {
         super(properties);
     }
@@ -36,7 +39,7 @@ public class VoidEngineBlock extends HorizontalKineticBlock implements IBE<VoidE
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockReader, BlockPos pos, CollisionContext context) {
-        return VPShapes.VOID_ENGINE.get(state.getValue(HORIZONTAL_FACING)) ;
+        return VPShapes.VOID_ENGINE.get(state.getValue(HORIZONTAL_FACING));
     }
 
     @Override

@@ -56,7 +56,7 @@ public class ScreenRenderer extends SafeBlockEntityRenderer<GlassScreenTE> {
         if (originTerminal == null || originTE == null) return;
 
         var origin = originTerminal.getOrigin();
-        var renderState = originTerminal.getRenderState(MonitorRenderState::new);
+        var renderState = originTerminal.getRenderState(GlassScreenRenderState::new);
         var monitorPos = monitor.getBlockPos();
 
         // Ensure each monitor terminal is rendered only once. We allow rendering a specific tile
@@ -133,7 +133,7 @@ public class ScreenRenderer extends SafeBlockEntityRenderer<GlassScreenTE> {
     }
 
     private static void renderTerminal(
-            Matrix4f matrix, ClientMonitor monitor, MonitorRenderState renderState, Terminal terminal, float xMargin, float yMargin,
+            Matrix4f matrix, ClientMonitor monitor, GlassScreenRenderState renderState, Terminal terminal, float xMargin, float yMargin,
             GlassScreenTE te, boolean enableTransparent, char noBG_color
     ) {
         //int width = terminal.getWidth(), height = terminal.getHeight();
@@ -146,6 +146,7 @@ public class ScreenRenderer extends SafeBlockEntityRenderer<GlassScreenTE> {
 
         var backgroundBuffer = assertNonNull(renderState.backgroundBuffer);
         var foregroundBuffer = assertNonNull(renderState.foregroundBuffer);
+        var foregroundNegBuffer = assertNonNull(renderState.foregroundNegBuffer);
         if (redraw) {
             var size = ScreenRenderUtils.getVertexCount(terminal);
 
@@ -159,11 +160,17 @@ public class ScreenRenderer extends SafeBlockEntityRenderer<GlassScreenTE> {
             renderToBuffer(backgroundBuffer, size, sink ->
                     ScreenRenderUtils.drawTerminalBackground(sink, 0, 0, terminal, yMargin, yMargin, xMargin, xMargin, enableTransparent ? noBG_color : 'z'));
 
+            //
             renderToBuffer(foregroundBuffer, size, sink -> {
-                ScreenRenderUtils.drawTerminalForeground(sink, 0, 0, terminal);
+                ScreenRenderUtils.drawTerminalForeground(sink, 0, 0, terminal, enableTransparent ? noBG_color : 'z');
                 // If the cursor is visible, we append it to the end of our buffer. When rendering, we can either
                 // render n or n+1 quads and so toggle the cursor on and off.
                 ScreenRenderUtils.drawCursor(sink, 0, 0, terminal);
+            });
+
+
+            renderToBuffer(foregroundNegBuffer, size, sink -> {
+                ScreenRenderUtils.drawTerminalForegroundNeg(sink, 0, 0, terminal, enableTransparent ? noBG_color : 'z');
             });
         }
 
@@ -174,7 +181,7 @@ public class ScreenRenderer extends SafeBlockEntityRenderer<GlassScreenTE> {
         RenderSystem.setInverseViewRotationMatrix(IDENTITY_NORMAL);
         RenderSystem.disableCull();
 
-        RenderTypes.TERMINAL.setupRenderState();
+        VPRenderTypes.TERMINAL.setupRenderState();
         // Render background geometry
         backgroundBuffer.bind();
         backgroundBuffer.drawWithShader(matrix, RenderSystem.getProjectionMatrix(), VPRenderTypes.text());
@@ -191,11 +198,23 @@ public class ScreenRenderer extends SafeBlockEntityRenderer<GlassScreenTE> {
                 FixedWidthFontRenderer.isCursorVisible(terminal) && FrameInfo.getGlobalCursorBlink()
                         ? foregroundBuffer.getIndexCount() + 6 : foregroundBuffer.getIndexCount()
         );
+        RenderTypes.TERMINAL.clearRenderState();
+
+
+        VPRenderTypes.TERMINAL_NEG.setupRenderState();
+        foregroundNegBuffer.bind();
+        foregroundNegBuffer.drawWithShader(
+                matrix, RenderSystem.getProjectionMatrix(), VPRenderTypes.text(),
+                // As mentioned in the above comment, render the extra cursor quad if it is visible this frame. Each
+                // // quad has an index count of 6.
+                FixedWidthFontRenderer.isCursorVisible(terminal) && FrameInfo.getGlobalCursorBlink()
+                        ? foregroundNegBuffer.getIndexCount() + 6 : foregroundNegBuffer.getIndexCount()
+        );
 
         // Clear state
         RenderSystem.polygonOffset(0.0f, -0.0f);
         RenderSystem.disablePolygonOffset();
-        RenderTypes.TERMINAL.clearRenderState();
+        VPRenderTypes.TERMINAL_NEG.clearRenderState();
         VertexBuffer.unbind();
         RenderSystem.enableCull();
         RenderSystem.setInverseViewRotationMatrix(oldInverseRotation);

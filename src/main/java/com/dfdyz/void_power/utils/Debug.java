@@ -1,6 +1,5 @@
 package com.dfdyz.void_power.utils;
 
-import com.dfdyz.void_power.network.SP.SP_HologramUpdate;
 
 import java.util.Map;
 
@@ -18,11 +17,6 @@ public class Debug {
         }
         a.append("\n}");
         System.out.println(a);
-    }
-
-    public static void PrintMsg(SP_HologramUpdate msg){
-        System.out.println(msg.x + " " + msg.y +  " " + msg.w + " " + msg.h + (msg.lazy ? "Lazy" : "Full"));
-        //PrintIntArray(msg.buffer, msg.w);
     }
 
     public static void PrintMap(Map<?,?> map){

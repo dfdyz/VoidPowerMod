@@ -10,6 +10,7 @@ import org.joml.Vector4d;
 import org.valkyrienskies.core.api.ships.ServerShip;
 import org.valkyrienskies.core.impl.game.ships.PhysShipImpl;
 import org.valkyrienskies.mod.common.VSGameUtilsKt;
+import org.valkyrienskies.mod.common.world.RaycastUtilsKt;
 
 public class VSUtils {
 
@@ -78,5 +79,4 @@ public class VSUtils {
 
         else return bp1.distSqr(bp2);
     }
-
 }

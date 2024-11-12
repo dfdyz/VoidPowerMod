@@ -46,11 +46,29 @@ public class Config
 
     private static final ForgeConfigSpec.IntValue HOLOGRAM_RES_X_MAX = BUILDER
             .comment("Max width can set for a hologram.")
-            .defineInRange("HOLOGRAM_WIDTH_MAX", 1024, 128, 4096);
+            .defineInRange("HOLOGRAM_WIDTH_MAX", 1024, 128, 2048);
 
     private static final ForgeConfigSpec.IntValue HOLOGRAM_RES_Y_MAX = BUILDER
             .comment("Max height can set for a hologram..")
-            .defineInRange("HOLOGRAM_HEIGHT_MAX", 1024, 128, 4096);
+            .defineInRange("HOLOGRAM_HEIGHT_MAX", 1024, 128, 2048);
+
+    private static final ForgeConfigSpec.IntValue HOLOGRAM_BUFFER_COUNT = BUILDER
+            .comment("Max count of frame buffer in a hologram.")
+            .defineInRange("HOLOGRAM_BUFFER_COUNT", 8, 2, 32);
+
+
+    private static final ForgeConfigSpec.BooleanValue WIRELESS_HUB_UNLIMITED = BUILDER
+            .comment("Remove wireless peripheral hub distance limited.")
+            .define("WIRELESS_HUB_UNLIMITED", true);
+
+    private static final ForgeConfigSpec.IntValue HOLOGRAM_FONT_COUNT = BUILDER
+            .comment("Max count of font for a hologram.")
+            .defineInRange("HOLOGRAM_FONT_COUNT", 2, 0, 8);
+
+    private static final ForgeConfigSpec.IntValue HOLOGRAM_FORCE_FULL_UPDATE_TICK = BUILDER
+            .comment("The max ticks between two sync(a tick after a call of 'hologram.Flush()') of hologram. set zero to disable forced full update.")
+            .defineInRange("HOLOGRAM_FORCE_FULL_UPDATE_TICK", 20, 0, 40);
+
 
     static final ForgeConfigSpec SPEC = BUILDER.build();
 
@@ -59,9 +77,15 @@ public class Config
     public static double DefaultMinPeriodFactor = 1;
     public static boolean ForceUseVanillaShader = false;
     public static boolean ResetControllerWhileLeft = true;
+    public static int HologramFontCount = 2;
+
+    public static int HologramMaxBufferCount = 8;
+    public static int ForceFullUpdateTick = 2;
 
     public static int holo_w_mx = 1024;
     public static int holo_h_mx = 1024;
+
+    public static boolean UnlimitDistance = true;
 
     private static boolean validateItemName(final Object obj)
     {
@@ -77,9 +101,14 @@ public class Config
         ForceUseVanillaShader = SCREEN_FORCED_USE_VANILLA_SHADER.get().booleanValue();
         ResetControllerWhileLeft = RESET_CONTROLLER_WHEN_LEFT.get().booleanValue();
 
+        UnlimitDistance = WIRELESS_HUB_UNLIMITED.get();
+
         holo_w_mx = HOLOGRAM_RES_X_MAX.get();
         holo_h_mx = HOLOGRAM_RES_Y_MAX.get();
+        HologramMaxBufferCount = HOLOGRAM_BUFFER_COUNT.get();
 
+        HologramFontCount = HOLOGRAM_FONT_COUNT.get();
+        ForceFullUpdateTick = HOLOGRAM_FORCE_FULL_UPDATE_TICK.get();
     }
 
 }

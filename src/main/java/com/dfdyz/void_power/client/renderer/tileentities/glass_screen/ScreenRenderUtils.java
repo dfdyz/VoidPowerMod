@@ -14,54 +14,104 @@ import org.lwjgl.system.MemoryUtil;
 import java.nio.ByteBuffer;
 
 public class ScreenRenderUtils {
-    private static void drawChar(DirectFixedWidthFontRenderer.QuadEmitter emitter, float x, float y, int index, byte[] colour) {
-        if (index != 0 && index != 32) {
-            int column = index % 16;
-            int row = index / 16;
+    private static void drawChar(DirectFixedWidthFontRenderer.QuadEmitter emitter, float x, float y, int index, int colour) {
+        if (index != 0) {
+            int idx = index == 32 ? 128 : index;
+            int column = idx % 16;
+            int row = idx / 16;
             int xStart = 1 + column * 8;
             int yStart = 1 + row * 11;
             quad(emitter, x, y, x + 6.0F, y + 9.0F, 0.0F, colour, (float)xStart / 256.0F, (float)yStart / 256.0F, (float)(xStart + 6) / 256.0F, (float)(yStart + 9) / 256.0F);
         }
     }
 
+
     private static void drawQuad(DirectFixedWidthFontRenderer.QuadEmitter emitter, float x, float y, float width, float height, Palette palette, char colourIndex, char noBG_colourIdx) {
         if(noBG_colourIdx != colourIndex){
-            byte[] colour = palette.getRenderColours(FixedWidthFontRenderer.getColour(colourIndex, Colour.BLACK));
+            int colour = palette.getRenderColours(FixedWidthFontRenderer.getColour(colourIndex, Colour.BLACK));
             quad(emitter, x, y, x + width, y + height, 0.0F, colour, 0.9765625F, 0.9765625F, 0.984375F, 0.984375F);
         }
     }
 
     private static void drawQuad(DirectFixedWidthFontRenderer.QuadEmitter emitter, float x, float y, float width, float height, Palette palette, char colourIndex) {
-        byte[] colour = palette.getRenderColours(FixedWidthFontRenderer.getColour(colourIndex, Colour.BLACK));
+        int colour = palette.getRenderColours(FixedWidthFontRenderer.getColour(colourIndex, Colour.BLACK));
         quad(emitter, x, y, x + width, y + height, 0.0F, colour, 0.9765625F, 0.9765625F, 0.984375F, 0.984375F);
     }
 
 
     public static void drawString(DirectFixedWidthFontRenderer.QuadEmitter emitter, float x, float y, TextBuffer text, TextBuffer textColour, Palette palette) {
         for(int i = 0; i < text.length(); ++i) {
-            byte[] colour = palette.getRenderColours(FixedWidthFontRenderer.getColour(textColour.charAt(i), Colour.BLACK));
+            int colour = palette.getRenderColours(FixedWidthFontRenderer.getColour(textColour.charAt(i), Colour.BLACK));
             int index = text.charAt(i);
             if (index > 255) {
                 index = '?';
             }
+            drawChar(emitter, x + (float)(i * 6), y, index, colour);
+        }
+    }
 
+    public static void drawString(DirectFixedWidthFontRenderer.QuadEmitter emitter, float x, float y, TextBuffer text, TextBuffer textColour, Palette palette, char cull_colorIdx) {
+        char col = ' ';
+        for(int i = 0; i < text.length(); ++i) {
+            col = textColour.charAt(i);
+            if(col == cull_colorIdx) {
+                continue;
+            }
+            int colour = palette.getRenderColours(FixedWidthFontRenderer.getColour(col, Colour.BLACK));
+            int index = text.charAt(i);
+            if (index > 255) {
+                index = '?';
+            }
             drawChar(emitter, x + (float)(i * 6), y, index, colour);
         }
 
     }
 
-    public static void drawTerminalForeground(DirectFixedWidthFontRenderer.QuadEmitter emitter, float x, float y, Terminal terminal) {
+
+    public static void drawStringNeg(DirectFixedWidthFontRenderer.QuadEmitter emitter, float x, float y, TextBuffer text, TextBuffer textColour, TextBuffer bgColor, Palette palette, char cull_colorIdx) {
+        char col = ' ', bgcol = ' ';
+        for(int i = 0; i < text.length(); ++i) {
+            col = textColour.charAt(i);
+            bgcol = bgColor.charAt(i);
+
+            if(col == cull_colorIdx && bgcol != cull_colorIdx){
+                int colour = palette.getRenderColours(FixedWidthFontRenderer.getColour(bgcol, Colour.BLACK));
+                int index = text.charAt(i);
+                if (index > 255) {
+                    index = '?';
+                }
+                drawChar(emitter, x + (float)(i * 6), y, index, colour);
+            }
+        }
+    }
+
+    public static void drawTerminalForeground(DirectFixedWidthFontRenderer.QuadEmitter emitter, float x, float y, Terminal terminal, char cull_color) {
         Palette palette = terminal.getPalette();
         int height = terminal.getHeight();
 
         for(int i = 0; i < height; ++i) {
             float rowY = y + (float)(9 * i);
-            drawString(emitter, x, rowY, terminal.getLine(i), terminal.getTextColourLine(i), palette);
+            //todo
+            //drawString(emitter, x, rowY, terminal.getLine(i), terminal.getTextColourLine(i), palette);
+            drawString(emitter, x, rowY, terminal.getLine(i), terminal.getTextColourLine(i), palette, cull_color);
         }
 
     }
 
-    private static void drawBackground(DirectFixedWidthFontRenderer.QuadEmitter emitter, float x, float y, TextBuffer backgroundColour, Palette palette, float leftMarginSize, float rightMarginSize, float height, char noBG_colourIdx) {
+    public static void drawTerminalForegroundNeg(DirectFixedWidthFontRenderer.QuadEmitter emitter, float x, float y, Terminal terminal, char cull_color) {
+        Palette palette = terminal.getPalette();
+        int height = terminal.getHeight();
+
+        for(int i = 0; i < height; ++i) {
+            float rowY = y + (float)(9 * i);
+            //todo
+            //drawString(emitter, x, rowY, terminal.getLine(i), terminal.getTextColourLine(i), palette);
+            drawStringNeg(emitter, x, rowY, terminal.getLine(i), terminal.getTextColourLine(i), terminal.getBackgroundColourLine(i), palette, cull_color);
+        }
+
+    }
+
+    private static void drawBackground(DirectFixedWidthFontRenderer.QuadEmitter emitter, float x, float y, TextBuffer backgroundColour, TextBuffer foregroundColor, Palette palette, float leftMarginSize, float rightMarginSize, float height, char noBG_colourIdx) {
         if (leftMarginSize > 0.0F) {
             drawQuad(emitter, x - leftMarginSize, y, leftMarginSize, height, palette, backgroundColour.charAt(0), noBG_colourIdx);
         }
@@ -75,6 +125,11 @@ public class ScreenRenderUtils {
 
         for(int i = 0; i < backgroundColour.length(); ++i) {
             char colourIndex = backgroundColour.charAt(i);
+            char colourIndex2 = foregroundColor.charAt(i);
+
+            if(colourIndex2 == noBG_colourIdx){
+                colourIndex = colourIndex2;
+            }
             if (colourIndex != blockColour) {
                 if (blockColour != 0) {
                     drawQuad(emitter,
@@ -83,7 +138,6 @@ public class ScreenRenderUtils {
                             (float)(6 * (i - blockStart)),
                             height, palette, blockColour, noBG_colourIdx);
                 }
-
                 blockColour = colourIndex;
                 blockStart = i;
             }
@@ -98,21 +152,19 @@ public class ScreenRenderUtils {
     public static void drawTerminalBackground(DirectFixedWidthFontRenderer.QuadEmitter emitter, float x, float y, Terminal terminal, float topMarginSize, float bottomMarginSize, float leftMarginSize, float rightMarginSize, char noBG_color) {
         Palette palette = terminal.getPalette();
         int height = terminal.getHeight();
-        drawBackground(emitter, x, y - topMarginSize, terminal.getBackgroundColourLine(0), palette, leftMarginSize, rightMarginSize, topMarginSize, noBG_color);
-        drawBackground(emitter, x, y + (float) (height * 9), terminal.getBackgroundColourLine(height - 1), palette, leftMarginSize, rightMarginSize, bottomMarginSize, noBG_color);;
 
-
+        drawBackground(emitter, x, y - topMarginSize, terminal.getBackgroundColourLine(0), terminal.getTextColourLine(0), palette, leftMarginSize, rightMarginSize, topMarginSize, noBG_color);
+        drawBackground(emitter, x, y + (float) (height * 9), terminal.getBackgroundColourLine(height - 1), terminal.getTextColourLine(height - 1), palette, leftMarginSize, rightMarginSize, bottomMarginSize, noBG_color);;
 
         for (int i = 0; i < height; ++i) {
             float rowY = y + (float) (9 * i);
-            drawBackground(emitter, x, rowY, terminal.getBackgroundColourLine(i), palette, leftMarginSize, rightMarginSize, 9.0F, noBG_color);
+            drawBackground(emitter, x, rowY, terminal.getBackgroundColourLine(i), terminal.getTextColourLine(i), palette, leftMarginSize, rightMarginSize, 9.0F, noBG_color);
         }
-
     }
 
     public static void drawCursor(DirectFixedWidthFontRenderer.QuadEmitter emitter, float x, float y, Terminal terminal) {
         if (FixedWidthFontRenderer.isCursorVisible(terminal)) {
-            byte[] colour = terminal.getPalette().getRenderColours(15 - terminal.getTextColour());
+            int colour = terminal.getPalette().getRenderColours(15 - terminal.getTextColour());
             drawChar(emitter, x + (float) (terminal.getCursorX() * 6), y + (float) (terminal.getCursorY() * 9), 95, colour);
         }
 
@@ -122,7 +174,7 @@ public class ScreenRenderUtils {
         return (terminal.getHeight() + 2) * (terminal.getWidth() + 2) * 2;
     }
 
-    private static void quad(DirectFixedWidthFontRenderer.QuadEmitter buffer, float x1, float y1, float x2, float y2, float z, byte[] rgba, float u1, float v1, float u2, float v2) {
+    private static void quad(DirectFixedWidthFontRenderer.QuadEmitter buffer, float x1, float y1, float x2, float y2, float z, int rgba, float u1, float v1, float u2, float v2) {
         buffer.quad(x1, y1, x2, y2, z, rgba, u1, v1, u2, v2);
     }
 
@@ -186,9 +238,6 @@ public class ScreenRenderUtils {
             throw new IndexOutOfBoundsException();
         }
     }
-
-
-
 
     // Empty Terminal
     private static void quad(FixedWidthFontRenderer.QuadEmitter c, float x1, float y1, float x2, float y2, float z, byte[] rgba, float u1, float v1, float u2, float v2, int light) {

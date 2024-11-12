@@ -2,7 +2,8 @@ package com.dfdyz.void_power.utils;
 
 import dan200.computercraft.api.lua.LuaException;
 
-import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +29,20 @@ public class ParamUtils {
         return Integer.reverseBytes(col);
     }
 
+
+
+
+    public static float rangeCheck(float x, float l, float r, int idx) throws LuaException {
+        if(x > r || x < l) throw new LuaException("Param " + idx + " out of range.");
+        return x;
+    }
+
+
+    public static int rangeCheck(int x, int l, int r, int idx) throws LuaException {
+        if(x > r || x < l) throw new LuaException("Param " + idx + " out of range.");
+        return x;
+    }
+
     public static int blendColor(int up, int down){
         float aup = (up & 0xFF) / 255.f;
         float adown = (down & 0xFF) / 255.f;
@@ -41,7 +56,7 @@ public class ParamUtils {
                 ((int)(((up >> 24) & 0xFF) * a0 + ((down >> 24) & 0xFF) * a1) << 24);
     }
 
-    public static String unicodeToCN(String str) {
+    public static String unicodeToStr(String str) {
         Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
         Matcher matcher = pattern.matcher(str);
         char ch;
@@ -52,6 +67,12 @@ public class ParamUtils {
         return str;
     }
 
-
+    public static Map<Double,Object> dumpIntArray(int[] array){
+        Map<Double,Object> map = new HashMap<>();
+        for (int i = 0; i < array.length; i++) {
+            map.put(i * 1.0, convertColor(array[i]));
+        }
+        return map;
+    }
 
 }

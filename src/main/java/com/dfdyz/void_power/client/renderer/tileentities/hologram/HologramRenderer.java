@@ -28,8 +28,8 @@ public class HologramRenderer extends SafeBlockEntityRenderer<HologramTE> {
     protected void renderSafe(HologramTE te, float partialTicks, PoseStack stack, MultiBufferSource bufferSource, 
                               int plight, int overlay) {
 
-        if (te.buffer.length == 0)return;
-        if (te.renderCache == null)te.renderCache = new ScreenCacheImpl(te);
+        if (te.getBuffer().length == 0)return;
+        if (te.renderCache == null) te.renderCache = new ScreenCacheImpl(te);
 
         ResourceLocation tex = te.renderCache.getTexture();
         if (tex == null)return;
@@ -61,8 +61,8 @@ public class HologramRenderer extends SafeBlockEntityRenderer<HologramTE> {
         VertexConsumer buf = bufferSource.getBuffer(RenderType.entityTranslucent(tex));
 
         float z = 0F;
-        float w = te.width / 32.f * te.scalex;
-        float h = te.high / 32.f * te.scaley;
+        float w = te.getWidth() / 32.f * te.scalex;
+        float h = te.getHeight() / 32.f * te.scaley;
 
         int light = 0xf000f0;
         buf.vertex(mat, w, h, z).color(1.0F, 1.0F, 1.0F, 1.0F).uv(1.0F, 0.0F).overlayCoords(overlay).uv2(light).normal(nor, 0.0F, 0.0F, 1.0F).endVertex();

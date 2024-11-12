@@ -47,9 +47,7 @@ public class SP_HologramRename {
         ctx.enqueueWork(() -> {
             BlockEntity be = Minecraft.getInstance().level.getExistingBlockEntity(msg.te);
             if(be instanceof HologramTE te){
-                System.out.println("RENAME");
                 te.Rename(msg.name);
-                System.out.println("SUCESS RENAME");
             }
         });
     }

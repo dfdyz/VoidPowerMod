@@ -22,7 +22,12 @@ import java.util.function.Supplier;
 public class VPRenderTypes {
 
     public static final ResourceLocation FONT = new ResourceLocation(VoidPowerMod.MODID, "textures/block/term_font.png");
-    public static final RenderType TERMINAL = getText(FixedWidthFontRenderer.FONT);
+
+    public static final ResourceLocation FONT_NEG = new ResourceLocation(VoidPowerMod.MODID, "textures/block/term_font_neg.png");
+
+    //public static final ResourceLocation FONT = new ResourceLocation(VoidPowerMod.MODID, "textures/block/term_font.png");
+    public static final RenderType TERMINAL = getText(VPRenderTypes.FONT);
+    public static final RenderType TERMINAL_NEG = getText(VPRenderTypes.FONT_NEG);
     public static final RenderType HOLOGRAM = getHologram(FixedWidthFontRenderer.FONT);
 
 
@@ -70,5 +75,7 @@ public class VPRenderTypes {
         return Config.ForceUseVanillaShader ? textShader : RenderTypes.getTerminalShader();
     }
 
-
+    public static ShaderInstance textNeg(){
+        return Config.ForceUseVanillaShader ? textShader : RenderTypes.getTerminalShader();
+    }
 }
