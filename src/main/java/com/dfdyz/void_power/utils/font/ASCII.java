@@ -4,10 +4,6 @@ import static com.dfdyz.void_power.utils.font.Font.all_16_32;
 import static com.dfdyz.void_power.utils.font.Font.all_2_4;
 
 public class ASCII {
-
-
-
-
     static boolean[][] get(int[] data){
         boolean[][] arr = new boolean[16][8];
         int byteCount;

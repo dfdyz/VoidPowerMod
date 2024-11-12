@@ -1,19 +1,21 @@
 package com.dfdyz.void_power.world.blocks.hologram;
 
 
+import com.dfdyz.void_power.Config;
 import com.dfdyz.void_power.client.screen_cache.IScreenCache;
 import com.dfdyz.void_power.compat.cct.peripherals.P_HologramPeripheral;
 import com.dfdyz.void_power.menu.HologramMenu;
 import com.dfdyz.void_power.network.CP.CP_HologramInputEvent;
-import com.dfdyz.void_power.network.CP.CP_HologramRename;
 import com.dfdyz.void_power.network.CP.CP_HologramUpdateRequest;
 import com.dfdyz.void_power.network.PacketManager;
 import com.dfdyz.void_power.network.SP.SP_HologramPoseUpdate;
 import com.dfdyz.void_power.network.SP.SP_HologramRename;
-import com.dfdyz.void_power.network.SP.SP_HologramUpdate;
-import com.dfdyz.void_power.utils.Debug;
+import com.dfdyz.void_power.network.SP.SP_HologramUpdate_A;
+import com.dfdyz.void_power.network.SP.SP_HologramUpdate_B;
+import com.dfdyz.void_power.utils.IntBuffer;
 import com.dfdyz.void_power.utils.ParamUtils;
 import com.dfdyz.void_power.utils.SyncLocker;
+import com.google.errorprone.annotations.concurrent.GuardedBy;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -38,23 +40,25 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-public class HologramTE extends SmartBlockEntity implements MenuProvider {
+import static com.dfdyz.void_power.utils.ByteUtils.maxLengthPerPack;
+
+public class HologramTE extends SmartBlockEntity implements MenuProvider, IFrameBuffer{
     public Behavior behavior;
 
     public P_HologramPeripheral peripheral;
     protected LazyOptional<IPeripheral> peripheralCap;
-    public int[] buffer;
-    public int width = 16, high = 16;
-    public int initColor = 0x00A0FF6F;
+    private int[] buffer;
+    private int[] buffer_last;
+
+    private int width = 16, high = 16;
+    protected int initColor = ParamUtils.convertColor(0x00A0FF6F);
 
     public float offx = 0, offy = 0, offz = 0;
     public float rotYaw = 0, rotPitch = 0, rotRoll = 0;
     public float scalex = 1, scaley = 1;
     public final SyncLocker<Boolean> transformDirty = new SyncLocker<>(false);
-
     public final SyncLocker<Boolean> needSync = new SyncLocker<>(true);
 
     public String name = UUID.randomUUID().toString();
@@ -68,7 +72,7 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider {
 
     public P_HologramPeripheral getPeripheral(){
         if(peripheral == null){
-            System.out.println("New at " + getBlockPos().toShortString());
+            //System.out.println("New at " + getBlockPos().toShortString());
             peripheral = new P_HologramPeripheral(this);
         }
         return peripheral;
@@ -92,29 +96,260 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider {
     @OnlyIn(Dist.CLIENT)
     public void clientSync(){
         if(needSync.getThenSet(false)){
-            // todo
-            // sync packet
             PacketManager.sendToServer(new CP_HologramUpdateRequest(this));
         }
     }
 
+    /*
+    public Vec3 TryClick(Player player){
+        // W.I.P.
+        return Vec3.ZERO;
+    }
+     */
+
+    public void UpdateRenderCache(){
+        if(renderCache != null){
+            renderCache.invalidate();
+        }
+    }
+
+    int force_full_sync_ticker = 0;
     public void serverSync(){
         if(peripheral == null) return;
+        if(force_full_sync_ticker < Config.ForceFullUpdateTick){
+            ++force_full_sync_ticker;
+        }
         if(needSync.getThenSet(false)){
-            //todo
-            //sync when screen update
-            if(peripheral.shouldFullUpdate.getThenSet(false)){
-                peripheral.SendFullPack(this);
+            if(Config.ForceFullUpdateTick > 0 && force_full_sync_ticker >= Config.ForceFullUpdateTick){
+                force_full_sync_ticker = 0;
+                FullSyncPack();
             }
             else {
-                peripheral.SendLazyPack(this);
-
+                NoFullSyncPack();
             }
-            //peripheral.SendFullPack(this);
         }
         if(transformDirty.getThenSet(false)){
             PacketManager.sendToAllPlayerTrackingThisBlock(new SP_HologramPoseUpdate(this), this);
         }
+    }
+
+    public void FullSyncPack(){
+       // System.out.println("Full Update");
+        int[] buffer = this.buffer;
+        int offset = 0;
+
+        while (offset < buffer.length){
+            int[] bf;
+
+            if(buffer.length > offset + maxLengthPerPack){
+                bf = new int[maxLengthPerPack+2];
+                System.arraycopy(buffer, offset, bf, 2, maxLengthPerPack);
+                bf[0] = offset;
+                bf[1] = maxLengthPerPack;
+            }
+            else {
+                int l = buffer.length - offset;
+                bf = new int[l + 2];
+                System.arraycopy(buffer, offset, bf, 2, l);
+                bf[0] = offset;
+                bf[1] = l;
+            }
+
+            offset += maxLengthPerPack;
+
+            PacketManager.sendToAllPlayerTrackingThisBlock(new SP_HologramUpdate_A(
+                    this,
+                    bf
+            ), this);
+        }
+
+        System.arraycopy(buffer, 0, buffer_last, 0, buffer.length);
+    }
+
+    public void NoFullSyncPack(){
+        //System.out.println("NoFull Update");
+        int[] buffer = this.buffer;
+        int[] buffer_last = this.buffer_last;
+
+        if(buffer_last == null){
+            if(getLevel() != null && !getLevel().isClientSide){
+                this.buffer_last = buffer.clone();
+            }
+            return;
+        }
+
+        // todo
+        // 统计变更并计算判断需要什么方法来更新
+        int dirty_len = 0;
+        int range_start = -1, range_len = 0;
+        int capability = maxLengthPerPack;
+
+        // 数据格式  offset, len, c_0, c_1, ....., c_(len-1)
+        IntBuffer range_buffer = new IntBuffer(maxLengthPerPack + 16);
+
+        // 数据格式  offset, color
+        IntBuffer sparse_buffer = new IntBuffer(maxLengthPerPack + 4);
+
+        int currColor;
+        boolean dirty;
+
+        for (int i = 0; i < buffer.length; i++) {
+            currColor = buffer[i];
+            dirty = currColor != buffer_last[i];
+            if(dirty){ // 变更
+                ++dirty_len;
+
+                if(range_start < 0){
+                    range_start = i;
+                    range_len = 0;
+                }
+
+                //System.out.print(i + " ");
+            }
+
+            if(range_start >= 0) ++range_len;
+
+            if(dirty){
+                if(range_len - dirty_len == 1){
+                    dirty_len = range_len;
+                }
+            }
+            else {
+                if(range_len > 0){
+                    if(range_len - dirty_len >= 2){
+                        // ? 1 0 0 ? ?
+                        // 变更情况 ? 1 0 0 ? ? ?
+                        // 需要写入
+                        if(dirty_len > 1){
+                            // 变更情况 ? 1 1 0 0 ? ? ?
+                            // 截断并记录
+                            //System.out.println("Push");
+                            // 当前包足够
+                            //System.out.printf("Push Range %d, %d\n", range_start, range_start + dirty_len);
+                            if(dirty_len + 2 < capability){
+                                range_buffer.push(range_start);
+                                range_buffer.push(dirty_len);
+
+                                int t_len = range_start + dirty_len;
+                                for (int j = range_start; j < t_len; j++) {
+                                    range_buffer.push(buffer[j]);
+                                }
+                                capability -= dirty_len + 2;
+                            }
+                            else { // 包满了
+                                //System.out.println("Overflow");
+                                while (dirty_len > 0){
+                                    int len = Math.min(dirty_len, capability);
+                                    range_buffer.push(range_start);
+                                    range_buffer.push(len);
+
+                                    int t_len = range_start + len;
+                                    for (int j = range_start; j < t_len; j++) {
+                                        range_buffer.push(buffer[j]);
+                                    }
+
+                                    dirty_len -= len;
+
+                                    // 发包
+                                    //System.out.println("FP");
+                                    if(len == capability){
+                                        PacketManager.sendToAllPlayerTrackingThisBlock(
+                                                new SP_HologramUpdate_A(this, range_buffer.getCutData()),
+                                                this);
+
+                                        range_buffer.clear();
+                                        capability = maxLengthPerPack;
+                                        range_start += len;
+                                    }
+                                    else {
+                                        capability -= len + 2;
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            // 变更情况 ? 0 1 0 0 ? ? ? (只变更了一位)
+                            // 记录离散点
+                            //System.out.printf("Push Point %d\n", range_start);
+                            sparse_buffer.push(range_start);
+                            sparse_buffer.push(buffer[range_start]);
+
+                            // todo
+                            // 如果离散点缓冲满了，发包
+                            if(sparse_buffer.getCount() >= maxLengthPerPack){
+                                PacketManager.sendToAllPlayerTrackingThisBlock(
+                                        new SP_HologramUpdate_B(this, sparse_buffer.getCutData()),
+                                        this);
+
+                                sparse_buffer.clear();
+                            }
+                        }
+                        dirty_len = 0;
+                        range_start = -1;
+                        range_len = 0;
+                    }
+                }
+            }
+        }
+
+        if(sparse_buffer.getCount() > 0){
+            PacketManager.sendToAllPlayerTrackingThisBlock(
+                    new SP_HologramUpdate_B(this, sparse_buffer.getCutData()),
+                    this);
+            sparse_buffer.clear();
+        }
+
+        if(range_start >= 0){
+            //System.out.println("Overflow end.");
+            if(dirty_len + 2 < capability){
+                range_buffer.push(range_start);
+                range_buffer.push(dirty_len);
+
+                int t_len = range_start + dirty_len;
+                for (int j = range_start; j < t_len; j++) {
+                    range_buffer.push(buffer[j]);
+                }
+
+                PacketManager.sendToAllPlayerTrackingThisBlock(
+                        new SP_HologramUpdate_A(this, range_buffer.getCutData()),
+                        this);
+
+                range_buffer.clear();
+            }
+            else {
+                //System.out.println("Overflow2");
+                while (dirty_len > 0){
+                    int len = Math.min(dirty_len, capability);
+                    range_buffer.push(range_start);
+                    range_buffer.push(len);
+
+                    int t_len = range_start + len;
+                    for (int j = range_start; j < t_len; j++) {
+                        range_buffer.push(buffer[j]);
+                    }
+
+                    dirty_len -= capability;
+                    range_start += capability;
+                    // 发包
+                    //System.out.println("FP2");
+                    PacketManager.sendToAllPlayerTrackingThisBlock(
+                            new SP_HologramUpdate_A(this, range_buffer.getCutData()),
+                            this);
+
+                    range_buffer.clear();
+                }
+            }
+        }
+        else {
+            //System.out.println("FP2");
+            if(range_buffer.getCount() > 0){
+                PacketManager.sendToAllPlayerTrackingThisBlock(
+                        new SP_HologramUpdate_A(this, range_buffer.getCutData()),
+                        this);
+                range_buffer.clear();
+            }
+        }
+        System.arraycopy(buffer, 0, buffer_last, 0, buffer.length);
     }
 
     @Override
@@ -135,7 +370,6 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider {
         super.initialize();
         needSync.set(true);
         transformDirty.set(true);
-        if(peripheral != null) peripheral.shouldFullUpdate.set(true);
     }
 
     @Override
@@ -151,19 +385,17 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider {
             int offO = (y - ay) * w;
             int offD = y * width;
             int edgeR = Math.min(width, ax+w);
-            for(int x = Math.max(ax, 0); x < edgeR; ++x){
-                buffer[offD + x] = src[offO + x - ax];
-            }
+            if (edgeR - Math.max(ax, 0) >= 0)
+                System.arraycopy(src, offO + Math.max(ax, 0) - ax, buffer, offD + Math.max(ax, 0), edgeR - Math.max(ax, 0));
         }
     }
 
-    public int[] MergeBuffer(int w, int h, int[] org, int[] dist){
+    public int[] MergeBuffer(int w, int h, int[] org, int[] dist, int initColor){
         int[] d = dist;
-        int init = ParamUtils.convertColor(initColor);
         if(d == null){
             d =  new int[w*h];
             for (int i = 0; i < w*h; i++) {
-                d[i] = init;
+                d[i] = initColor;
             }
         }
         for(int y = 0; y < high && y < h; ++y){
@@ -176,52 +408,83 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider {
         return d;
     }
 
-    void FillBuffer(int ax, int ay, int w, int h, int color){
-        color = ParamUtils.convertColor(color);
+    void FillBuffer(int ax, int ay, int w, int h, int raw_color){
         int[] buffer = this.buffer;
         for(int y = Math.max(ay, 0); y < high && y < h; ++y) {
             int offD = y * w;
             for (int x = Math.max(ax, 0); x < width && x < w; ++x) {
-                buffer[offD + x] = color;
+                buffer[offD + x] = raw_color;
             }
         }
     }
 
-    public void resize(int w, int h){
+    @Override
+    public IFrameBuffer resize(int w, int h){
         if(buffer == null){
             buffer = new int[w * h];
             FillBuffer(0,0,w,h,initColor);
-            //Debug.PrintIntArray(buffer);
         }
-        if(w != width || h != high){
-            buffer = MergeBuffer(w,h,buffer, null);
-            width = w;
-            high = h;
-            if(peripheral != null) {
-                peripheral.shouldFullUpdate.set(true);
+        if(buffer_last == null && buffer != null){
+            if(getLevel() != null && !getLevel().isClientSide){
+                buffer_last = buffer.clone();
             }
         }
+
+
+        if(w != width || h != high){
+            buffer = MergeBuffer(w,h,buffer, null, initColor);
+            if(getLevel() != null && !getLevel().isClientSide){
+                buffer_last = MergeBuffer(w,h, buffer_last, null, initColor+1);
+            }
+            width = w;
+            high = h;
+        }
+        return this;
     }
 
-    public void handleLazyUpdatePack(SP_HologramUpdate msg){
-        //System.out.println("Received Update Pack");
-        if(!msg.lazy){
-            resize(msg.w, msg.h);
-        }
-        try{
-            BlitBuffer(msg.x, msg.y, msg.w, msg.h, msg.buffer);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        if(renderCache != null) renderCache.invalidate();
-        //Debug.PrintMsg(msg);
-        //Debug.PrintIntArray(buffer, width);
-        //System.out.println("Received Update Pack 2");
+    @Override
+    public int getInitColor() {
+        return initColor;
     }
 
+    @Override
+    public void setInitColor(int col) {
+        initColor = col;
+    }
+
+    //todo
     public void returnFullUpdatePack(ServerPlayer player){
-        PacketManager.sendToPlayer(new SP_HologramUpdate(this), player);
+        int[] buffer = this.buffer;
+        int offset = 0;
+
+        while (offset < buffer.length){
+            int[] bf;
+
+            if(buffer.length > offset + maxLengthPerPack){
+                bf = new int[maxLengthPerPack+2];
+                System.arraycopy(buffer, offset, bf, 2, maxLengthPerPack);
+                bf[0] = offset;
+                bf[1] = maxLengthPerPack;
+            }
+            else {
+                int l = buffer.length - offset;
+                bf = new int[l + 2];
+                System.arraycopy(buffer, offset, bf, 2, l);
+                bf[0] = offset;
+                bf[1] = l;
+            }
+
+            offset += maxLengthPerPack;
+
+            PacketManager.sendToPlayer(
+                    new SP_HologramUpdate_A(
+                            this,
+                            bf
+                    ),
+                    player);
+
+        }
+
         PacketManager.sendToPlayer(new SP_HologramPoseUpdate(this), player);
     }
 
@@ -242,6 +505,26 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider {
     @Override
     public AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
         return new HologramMenu(i, this);
+    }
+
+    @Override
+    public int[] getBuffer() {
+        return buffer;
+    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return high;
+    }
+
+    @Override
+    public boolean isTE(){
+        return true;
     }
 
     public static class Behavior extends BlockEntityBehaviour{

@@ -2,5 +2,7 @@
   "block.void_power.engine_controller": "Engine Controller",
   "block.void_power.void_engine": "Void Engine",
   "block.void_power.glass_screen":"GlassScreen",
-  "itemGroup.void_power.main": "Void Power"
+  "item.void_power.vr_glasses": "VR Glasses",
+  "itemGroup.void_power.main": "Void Power",
+  "key_bind.vr_glasses": "Toggle VR Glasses"
 }

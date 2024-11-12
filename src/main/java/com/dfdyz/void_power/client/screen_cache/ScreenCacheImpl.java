@@ -27,7 +27,7 @@ public class ScreenCacheImpl implements IScreenCache {
     public ScreenCacheImpl(HologramTE be) {
         this.be = be;
         this.needsUpdate = true;
-        dynTex = new DynamicTexture(be.width, be.high, true);
+        dynTex = new DynamicTexture(be.getWidth(), be.getHeight(), true);
         loc = Minecraft.getInstance().getTextureManager().register(VoidPowerMod.MODID, dynTex);
     }
 
@@ -41,12 +41,12 @@ public class ScreenCacheImpl implements IScreenCache {
     }
 
     public ResourceLocation getTexture() {
-        if (be == null || be.buffer.length == 0) return null;
+        if (be == null || be.getBuffer().length == 0) return null;
         Minecraft mc = Minecraft.getInstance();
         if(mc.getTextureManager().getTexture(loc) == null)
             mc.getTextureManager().register(loc, dynTex);
         if (needsUpdate) {
-            load(be.width, be.high, be.buffer);
+            load(be.getWidth(), be.getHeight(), be.getBuffer());
             needsUpdate = false;
         }
         return loc;

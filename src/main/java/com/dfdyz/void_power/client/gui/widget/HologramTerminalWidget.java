@@ -10,6 +10,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.BitSet;
 
@@ -25,13 +26,13 @@ public class HologramTerminalWidget extends AbstractWidget {
     }
 
     public boolean ShouldResize(){
-        return te.width != this.width || te.high != this.height;
+        return te.getWidth() != this.width || te.getHeight() != this.height;
     }
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
-            if (te.buffer.length == 0)return;
+            if (te.getBuffer().length == 0)return;
             if (te.renderCache == null)te.renderCache = new ScreenCacheImpl(te);
             ResourceLocation tex = te.renderCache.getTexture();;
             if (tex == null)return;
@@ -42,7 +43,7 @@ public class HologramTerminalWidget extends AbstractWidget {
     }
 
     @Override
-    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+    protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {
 
     }
 
@@ -122,8 +123,8 @@ public class HologramTerminalWidget extends AbstractWidget {
         if (!this.inRegion(mouseX, mouseY)) {
             return false;
         } else if (button >= 0 && button <= 2) {
-            int pxX = (int)Math.floor((mouseX - this.getX()) / width * te.width);
-            int pxY = (int)Math.floor((mouseY - this.getY()) / height * te.high);
+            int pxX = (int)Math.floor((mouseX - this.getX()) / width * te.getWidth());
+            int pxY = (int)Math.floor((mouseY - this.getY()) / height * te.getHeight());
 
             te.SendInputPack("vp_mouse_clicked", te.name, button + 1, pxX, pxY);
 
@@ -140,8 +141,8 @@ public class HologramTerminalWidget extends AbstractWidget {
         if (!this.inRegion(mouseX, mouseY)) {
             return false;
         } else if (button >= 0 && button <= 2) {
-            int pxX = (int)Math.floor((mouseX - this.getX()) / width * te.width);
-            int pxY = (int)Math.floor((mouseY - this.getY()) / height * te.high);
+            int pxX = (int)Math.floor((mouseX - this.getX()) / width * te.getWidth());
+            int pxY = (int)Math.floor((mouseY - this.getY()) / height * te.getHeight());
 
             if (this.lastMouseButton == button) {
                 te.SendInputPack("vp_mouse_released", te.name, button + 1, pxX, pxY);
@@ -164,8 +165,8 @@ public class HologramTerminalWidget extends AbstractWidget {
         if (!this.inRegion(mouseX, mouseY)) {
             return false;
         } else if (delta != 0.0) {
-            int pxX = (int)Math.floor((mouseX - this.getX()) / width * te.width);
-            int pxY = (int)Math.floor((mouseY - this.getY()) / height * te.high);
+            int pxX = (int)Math.floor((mouseX - this.getX()) / width * te.getWidth());
+            int pxY = (int)Math.floor((mouseY - this.getY()) / height * te.getHeight());
             te.SendInputPack("vp_mouse_scrolled", te.name, delta, pxX, pxY);
 
             this.lastMouseX = pxX;

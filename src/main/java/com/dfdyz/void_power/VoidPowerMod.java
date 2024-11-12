@@ -13,7 +13,9 @@ import dan200.computercraft.shared.computer.core.ServerContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -71,6 +73,8 @@ public class VoidPowerMod
         //LOGGER.info("HELLO FROM COMMON SETUP");
     }
 
+
+
     private void clientSetup(FMLClientSetupEvent event)
     {
         /*
@@ -91,10 +95,13 @@ public class VoidPowerMod
 
     @SubscribeEvent
     public void onServerStarted(ServerStartedEvent event){
-        LOGGER.error("ServerStarted.");
+        //LOGGER.error("ServerStarted.");
         CCUtils.context = ServerContext.get(event.getServer());
     }
 
+    public static ResourceLocation getRL(String sub){
+        return new ResourceLocation(MODID, sub);
+    }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     //@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

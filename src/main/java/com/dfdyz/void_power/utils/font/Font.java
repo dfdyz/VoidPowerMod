@@ -3,14 +3,16 @@ package com.dfdyz.void_power.utils.font;
 
 import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.Input;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
 public class Font {
-
     public static final HashMap<Character,CharMat> Char_Mat_MAP = Maps.newHashMap();
 
     public static class CharMat{
@@ -25,6 +27,7 @@ public class Font {
             width = bitmap[0].length;
         }
 
+        /*
         public void Print(){
             for (int i = 0; i < bitmap.length; i++) {
                 for (int j = 0; j < width; j++) {
@@ -32,7 +35,7 @@ public class Font {
                 }
                 System.out.println("\n");
             }
-        }
+        }*/
 
         public CharMat(){
             this.bitmap = new boolean[16][8];
@@ -99,29 +102,25 @@ public class Font {
     static int all_2_4 = 2;
     static int all_32_128 = 32;
 
-    @SuppressWarnings({"OptionalGetWithoutIsPresent", "ResultOfMethodCallIgnored"})
+    @SuppressWarnings({"ResultOfMethodCallIgnored"})
     protected static byte[] read(int areaCode, int posCode) throws IOException {
         byte[] data = null;
         try {
             int area = areaCode - 0xa0;
             int pos = posCode - 0xa0;
-
-            InputStream in = Minecraft.getInstance().getResourceManager()
-                    .getResource(
-                            new ResourceLocation("void_power","vp_font/hzk16.bin")
-                    )
-                    .get().open();
-            long offset = all_32_128 * ((area - 1) * 94 + pos - 1);
+            InputStream in = Font.class.getResourceAsStream("hzk16.bin");
+            long offset = all_32_128 * ((area - 1) * 94L + pos - 1);
             in.skip(offset);
             data = new byte[all_32_128];
             in.read(data, 0, all_32_128);
             in.close();
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             throw ex;
         }
         return data;
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     protected static int[] getByteCode(String str) {
         int[] byteCode = new int[2];
         try {
@@ -133,23 +132,9 @@ public class Font {
         }
         return byteCode;
     }
-    public static InputStream hzkFile;
 
-    public static void Init(){
-        try {
-            hzkFile = Minecraft.getInstance().getResourceManager()
-                    .getResource(
-                            new ResourceLocation("void_power","vp_font/hzk16.bin")
-                    )
-                    .get().open();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public static void Init() {
         ASCII.Init();
-    }
-
-    static void PrintChar(char ch){
-        getMat(ch).Print();
     }
 
 }

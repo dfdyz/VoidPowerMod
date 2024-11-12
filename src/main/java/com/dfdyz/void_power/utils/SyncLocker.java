@@ -7,18 +7,14 @@ public class SyncLocker<T> {
         value = init;
     }
 
-    public void set(T value){
-        synchronized (this){
-            this.value = value;
-        }
+    public synchronized void set(T value){
+        this.value = value;
     }
 
     public T getThenSet(T value){
-        synchronized (this){
-            T org = this.value;
-            this.value = value;
-            return org;
-        }
+        T org = this.value;
+        set(value);
+        return org;
     }
 
     public T get(){

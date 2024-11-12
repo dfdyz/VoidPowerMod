@@ -4,10 +4,7 @@ import com.dfdyz.void_power.VoidPowerMod;
 import com.dfdyz.void_power.network.CP.CP_HologramInputEvent;
 import com.dfdyz.void_power.network.CP.CP_HologramRename;
 import com.dfdyz.void_power.network.CP.CP_HologramUpdateRequest;
-import com.dfdyz.void_power.network.SP.SP_HologramPoseUpdate;
-import com.dfdyz.void_power.network.SP.SP_HologramRename;
-import com.dfdyz.void_power.network.SP.SP_HologramUpdate;
-import com.dfdyz.void_power.network.SP.SP_UpdateGlassScreen;
+import com.dfdyz.void_power.network.SP.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -26,7 +23,7 @@ public class PacketManager {
             })
             .clientAcceptedVersions(PacketManager.VERSION::equals).serverAcceptedVersions(PacketManager.VERSION::equals).simpleChannel();
 
-    public static final String VERSION = "1.2";
+    static final String VERSION = "1.3";
 
     public PacketManager() {
     }
@@ -68,9 +65,13 @@ public class PacketManager {
                 SP_UpdateGlassScreen::encode, SP_UpdateGlassScreen::decode,
                 SP_UpdateGlassScreen::handler, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 
-        CHANNEL.registerMessage(index++, SP_HologramUpdate.class,
-                SP_HologramUpdate::encode, SP_HologramUpdate::decode,
-                SP_HologramUpdate::handler, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        CHANNEL.registerMessage(index++, SP_HologramUpdate_A.class,
+                SP_HologramUpdate_A::encode, SP_HologramUpdate_A::decode,
+                SP_HologramUpdate_A::handler, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+
+        CHANNEL.registerMessage(index++, SP_HologramUpdate_B.class,
+                SP_HologramUpdate_B::encode, SP_HologramUpdate_B::decode,
+                SP_HologramUpdate_B::handler, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 
         CHANNEL.registerMessage(index++, SP_HologramPoseUpdate.class,
                 SP_HologramPoseUpdate::encode, SP_HologramPoseUpdate::decode,

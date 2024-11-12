@@ -10,9 +10,10 @@ import org.valkyrienskies.mod.util.BugFixUtil;
 import java.util.Arrays;
 import java.util.Map;
 
-@Mixin(value = BugFixUtil.class, remap = false)
+//@Mixin(value = BugFixUtil.class, remap = false)
 public abstract class MixinBugFixUtils_Kt {
 
+    /*
     @Inject(method = "isCollisionBoxToBig", at = @At("RETURN"), cancellable = true)
     public void TraceCall(AABB aabb, CallbackInfoReturnable<Boolean> cir){
         if(cir.getReturnValue()){
@@ -25,7 +26,6 @@ public abstract class MixinBugFixUtils_Kt {
             cir.cancel();
         }
     }
-
-
+     */
 
 }
