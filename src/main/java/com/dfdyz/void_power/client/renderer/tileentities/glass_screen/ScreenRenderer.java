@@ -3,6 +3,7 @@ package com.dfdyz.void_power.client.renderer.tileentities.glass_screen;
 import com.dfdyz.void_power.client.renderer.VPRenderTypes;
 import com.dfdyz.void_power.mixin.IMonitorTEAccessor;
 import com.dfdyz.void_power.world.blocks.glass_screen.GlassScreenTE;
+import com.dfdyz.void_power.world.blocks.hologram.HologramTE;
 import com.mojang.blaze3d.platform.MemoryTracker;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -12,7 +13,6 @@ import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRender
 import dan200.computercraft.client.FrameInfo;
 import dan200.computercraft.client.integration.ShaderMod;
 import dan200.computercraft.client.render.RenderTypes;
-import dan200.computercraft.client.render.monitor.MonitorRenderState;
 import dan200.computercraft.client.render.text.DirectFixedWidthFontRenderer;
 import dan200.computercraft.client.render.text.FixedWidthFontRenderer;
 import dan200.computercraft.client.render.vbo.DirectVertexBuffer;
@@ -56,12 +56,12 @@ public class ScreenRenderer extends SafeBlockEntityRenderer<GlassScreenTE> {
         if (originTerminal == null || originTE == null) return;
 
         var origin = originTerminal.getOrigin();
+
+        if(! (originTE instanceof GlassScreenTE))return;
+
         var renderState = originTerminal.getRenderState(GlassScreenRenderState::new);
         var monitorPos = monitor.getBlockPos();
 
-        // Ensure each monitor terminal is rendered only once. We allow rendering a specific tile
-        // multiple times in a single frame to ensure compatibility with shaders which may run a
-        // pass multiple times.
         var renderFrame = FrameInfo.getRenderFrame();
         if (renderState.lastRenderFrame == renderFrame && !monitorPos.equals(renderState.lastRenderPos)) {
             return;

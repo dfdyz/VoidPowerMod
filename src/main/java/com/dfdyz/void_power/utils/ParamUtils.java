@@ -1,6 +1,7 @@
 package com.dfdyz.void_power.utils;
 
 import dan200.computercraft.api.lua.LuaException;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,6 +74,14 @@ public class ParamUtils {
             map.put(i * 1.0, convertColor(array[i]));
         }
         return map;
+    }
+
+    static Pattern channel_pattern = Pattern.compile("^[a-z][a-z0-9_]*:[a-z][a-z0-9_/]*+$");
+    public static boolean checkChannel(String s){
+        if(channel_pattern.matcher(s).find()){
+            return !new ResourceLocation(s).getNamespace().equals("null");
+        }
+        return false;
     }
 
 }

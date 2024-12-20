@@ -1,6 +1,7 @@
 package com.dfdyz.void_power.registry;
 
 import com.dfdyz.void_power.VoidPowerMod;
+import com.dfdyz.void_power.world.items.ChannelModifierItem;
 import com.dfdyz.void_power.world.items.VRGlassesItem;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.equipment.armor.AllArmorMaterials;
@@ -20,6 +21,11 @@ public class VPItems {
             .item(VRGlassesItem.ID,
                     p -> new VRGlassesItem(AllArmorMaterials.COPPER, p, VoidPowerMod.getRL(VRGlassesItem.ID)))
             .tag(forgeItemTag("armors/helmets"))
+            .register();
+
+    public static final ItemEntry<ChannelModifierItem> CHANNEL_MODIFIER = REGISTRATE
+            .item(ChannelModifierItem.ID, ChannelModifierItem::new)
+            //.tag(forgeItemTag("armors/helmets"))
             .register();
 
     public static void register(){

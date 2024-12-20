@@ -25,8 +25,8 @@ public class HologramGUI extends Screen implements MenuAccess<HologramMenu> {
     float terminal_scale = 1;
     final HologramMenu menu;
 
-    public HologramGUI(HologramMenu menu, Inventory inventory, Component p_97743_) {
-        super(p_97743_);
+    public HologramGUI(HologramMenu menu, Inventory inventory, Component component) {
+        super(component);
         this.menu = menu;
         if(menu != null){
             te = menu.te;

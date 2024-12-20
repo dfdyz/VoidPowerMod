@@ -23,6 +23,11 @@ public class IntBuffer {
         top = 0;
     }
 
+    public void push(int[] src, int offset, int len){
+        System.arraycopy(src, offset, buf, top, len);
+        top += len;
+    }
+
     public int[] getCutData(){
         return Arrays.copyOf(buf, top);
     }

@@ -13,13 +13,9 @@ import org.valkyrienskies.mod.common.VSGameUtilsKt;
 import org.valkyrienskies.mod.common.world.RaycastUtilsKt;
 
 public class VSUtils {
-
-    //VSGameUtilsKt.class
-
     public static double[][] getRotationMatrixRaw(ServerShip ship) {
         Matrix4dc transform = ship.getTransform().getShipToWorld();
         double[][] matrix = new double[4][4];
-
         for (int i = 0; i < 4; i++) {
             Vector4d row = transform.getRow(i, new Vector4d());
             matrix[i][0] = row.x;
@@ -27,9 +23,10 @@ public class VSUtils {
             matrix[i][2] = row.z;
             matrix[i][3] = row.w;
         }
-
         return matrix;
     }
+
+
 
     public static double[][] getRotationMatrixRaw(PhysShipImpl ship){
         Matrix4dc transform = ship.getTransform().getShipToWorld();

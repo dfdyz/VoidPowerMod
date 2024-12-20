@@ -3,7 +3,9 @@ package com.dfdyz.void_power.registry;
 import com.dfdyz.void_power.world.blocks.engine_controller.EngineControllerBlock;
 import com.dfdyz.void_power.world.blocks.glass_screen.GlassScreenBlock;
 import com.dfdyz.void_power.world.blocks.hologram.HologramBlock;
-import com.dfdyz.void_power.world.blocks.hologram.HologramTE;
+import com.dfdyz.void_power.world.blocks.redstone_link.RSBroadcasterBlock;
+import com.dfdyz.void_power.world.blocks.redstone_link.RSReceiverBlock;
+import com.dfdyz.void_power.world.blocks.redstone_link.RSRouterBlock;
 import com.dfdyz.void_power.world.blocks.void_engine.VoidEngineBlock;
 import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.SharedProperties;
@@ -59,6 +61,38 @@ public class VPBlocks {
             .initialProperties(SharedProperties::stone)
             .transform(TagGen.axeOrPickaxe())
             .blockstate(BlockStateGen.horizontalBlockProvider(true))
+            //.addLayer(() -> RenderType::translucent)
+            //.transform(BlockStressDefaults.setImpact(8.0))
+            .item()
+            .transform(customItemModel())
+            .register();
+
+
+    public static final BlockEntry<RSBroadcasterBlock> RS_BROADCASTER_BLOCK = REGISTRATE.block(RSBroadcasterBlock.ID, RSBroadcasterBlock::new)
+            .initialProperties(SharedProperties::stone)
+            .transform(TagGen.axeOrPickaxe())
+            //.blockstate(BlockStateGen.horizontalBlockProvider(true))
+            //.addLayer(() -> RenderType::translucent)
+            //.transform(BlockStressDefaults.setImpact(8.0))
+            .item()
+            .transform(customItemModel())
+            .register();
+
+    public static final BlockEntry<RSReceiverBlock> RS_RECEIVER_BLOCK = REGISTRATE.block(RSReceiverBlock.ID, RSReceiverBlock::new)
+            .initialProperties(SharedProperties::stone)
+            .transform(TagGen.axeOrPickaxe())
+            //.blockstate(BlockStateGen.horizontalBlockProvider(true))
+            //.addLayer(() -> RenderType::translucent)
+            //.transform(BlockStressDefaults.setImpact(8.0))
+            .item()
+            .transform(customItemModel())
+            .register();
+
+
+    public static final BlockEntry<RSRouterBlock> RS_ROUTER_BLOCK = REGISTRATE.block(RSRouterBlock.ID, RSRouterBlock::new)
+            .initialProperties(SharedProperties::stone)
+            .transform(TagGen.axeOrPickaxe())
+            //.blockstate(BlockStateGen.horizontalBlockProvider(true))
             //.addLayer(() -> RenderType::translucent)
             //.transform(BlockStressDefaults.setImpact(8.0))
             .item()
