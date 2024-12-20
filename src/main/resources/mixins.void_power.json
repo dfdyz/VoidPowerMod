@@ -1,7 +1,4 @@
 {
-  "client": [
-    "MixinMonitorHighlightRenderer"
-  ],
   "compatibilityLevel": "JAVA_17",
   "injector": {
     "defaultRequire": 1
@@ -16,6 +13,10 @@
     "MixinPeripheralProxyTE_Kt",
     "MixinTerminal",
     "MixinTweakedControllerTE"
+  ],
+  "client": [
+    "MixinCCMonitorRender",
+    "MixinMonitorHighlightRenderer"
   ],
   "package": "com.dfdyz.void_power.mixin",
   "plugin": "com.dfdyz.void_power.mixin.MixinPlugin",

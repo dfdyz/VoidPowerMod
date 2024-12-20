@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "void_power:block/redstone_router/block"
+    }
+  }
+}

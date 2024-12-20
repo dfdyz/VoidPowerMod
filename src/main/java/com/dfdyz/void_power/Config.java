@@ -66,8 +66,8 @@ public class Config
             .defineInRange("HOLOGRAM_FONT_COUNT", 2, 0, 8);
 
     private static final ForgeConfigSpec.IntValue HOLOGRAM_FORCE_FULL_UPDATE_TICK = BUILDER
-            .comment("The max ticks between two sync(a tick after a call of 'hologram.Flush()') of hologram. set zero to disable forced full update.")
-            .defineInRange("HOLOGRAM_FORCE_FULL_UPDATE_TICK", 20, 0, 40);
+            .comment("The max ticks between two force full sync(a tick after a call of 'hologram.Flush(true)') of hologram. set zero to disable forced full update.")
+            .defineInRange("HOLOGRAM_FORCE_FULL_UPDATE_TICK", 20, -1, 400);
 
 
     static final ForgeConfigSpec SPEC = BUILDER.build();
@@ -81,6 +81,7 @@ public class Config
 
     public static int HologramMaxBufferCount = 8;
     public static int ForceFullUpdateTick = 2;
+    public static boolean EnableForceFullUpdate = true;
 
     public static int holo_w_mx = 1024;
     public static int holo_h_mx = 1024;
@@ -95,11 +96,11 @@ public class Config
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event)
     {
-        StressPerRPM =  STRESS_PER_RPM.get().doubleValue();
-        MassPerStress = MASS_PER_STRESS.get().doubleValue();
-        DefaultMinPeriodFactor = CC_DEFAULT_MIN_PERIOD_FACTOR.get().doubleValue();
-        ForceUseVanillaShader = SCREEN_FORCED_USE_VANILLA_SHADER.get().booleanValue();
-        ResetControllerWhileLeft = RESET_CONTROLLER_WHEN_LEFT.get().booleanValue();
+        StressPerRPM = STRESS_PER_RPM.get();
+        MassPerStress = MASS_PER_STRESS.get();
+        DefaultMinPeriodFactor = CC_DEFAULT_MIN_PERIOD_FACTOR.get();
+        ForceUseVanillaShader = SCREEN_FORCED_USE_VANILLA_SHADER.get();
+        ResetControllerWhileLeft = RESET_CONTROLLER_WHEN_LEFT.get();
 
         UnlimitDistance = WIRELESS_HUB_UNLIMITED.get();
 
@@ -109,6 +110,7 @@ public class Config
 
         HologramFontCount = HOLOGRAM_FONT_COUNT.get();
         ForceFullUpdateTick = HOLOGRAM_FORCE_FULL_UPDATE_TICK.get();
+        EnableForceFullUpdate = ForceFullUpdateTick > 0;
     }
 
 }

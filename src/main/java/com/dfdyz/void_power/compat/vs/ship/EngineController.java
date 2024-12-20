@@ -8,13 +8,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.Sets;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
-import org.joml.Vector3dc;
 import org.valkyrienskies.core.api.ships.PhysShip;
 import org.valkyrienskies.core.api.ships.ServerShip;
-import org.valkyrienskies.core.api.ships.ServerTickListener;
 import org.valkyrienskies.core.api.ships.ShipForcesInducer;
 import org.valkyrienskies.core.impl.game.ships.PhysShipImpl;
-import org.valkyrienskies.mod.common.config.VSGameConfig;
 
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,6 +33,8 @@ public class EngineController implements ShipForcesInducer {
     @JsonIgnore
     Set<VoidEngineTE> engine = Sets.newConcurrentHashSet();
 
+
+
     @JsonIgnore
     boolean canDrive = false;
 
@@ -45,8 +44,8 @@ public class EngineController implements ShipForcesInducer {
     @JsonIgnore
     boolean idle_mode = true;
 
+    boolean disable_idle = false;
     //public long shipId = -1;
-
 
     //private void setShip(ServerShip ship){
         //this.ship = ship;
@@ -121,6 +120,10 @@ public class EngineController implements ShipForcesInducer {
 
     public void setIdle(boolean b){
         idle_mode = b;
+    }
+
+    public void disableIdle(boolean b){
+        disable_idle = b;
     }
 
     private void IDLE(PhysShipImpl physShip){

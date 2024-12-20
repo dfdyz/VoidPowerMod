@@ -31,11 +31,10 @@ public class VoidEngineTE extends KineticBlockEntity{
         if(level.isClientSide) return;
         if(ship == null){
             ship = VSGameUtilsKt.getShipObjectManagingPos((ServerLevel) level, getBlockPos());
-        }
-
-        if(ship != null){
-            EngineController ec = EngineController.getOrCreate(ship);
-            ec.addEngine(this);
+            if(ship != null){
+                EngineController ec = EngineController.getOrCreate(ship);
+                ec.addEngine(this);
+            }
         }
 
         calculateStressApplied();
@@ -58,12 +57,12 @@ public class VoidEngineTE extends KineticBlockEntity{
     @Override
     public void invalidate() {
         super.invalidate();
-
         if(level.isClientSide) return;
         if(ship != null){
             EngineController ec = EngineController.getOrCreate(ship);
             ec.removeEngine(this);
         }
+        ship = null;
     }
 
     @Override

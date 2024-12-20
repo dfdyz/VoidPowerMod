@@ -66,7 +66,6 @@ public class EngineControllerTE extends SmartBlockEntity {
     @Override
     public void tick() {
         super.tick();
-
         if(level.isClientSide) return;
         if(ship == null){
             ship = VSGameUtilsKt.getShipObjectManagingPos((ServerLevel) level, getBlockPos());
@@ -111,10 +110,13 @@ public class EngineControllerTE extends SmartBlockEntity {
     public void remove() {
         super.remove();
 
-        if(level.isClientSide) return;
+        if (level != null && level.isClientSide) return;
         if(ec != null){
             ec.removeController(this);
         }
+        ship = null;
+        ec = null;
+        qfa = null;
     }
 
     @Override

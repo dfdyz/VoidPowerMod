@@ -24,10 +24,6 @@ import java.util.*;
 
 public class P_HologramPeripheral implements IPeripheral{
 
-    //public int dirty_x, dirty_y, dirty_ex, dirty_ey;
-
-    //public SyncLocker<Boolean> shouldFullUpdate = new SyncLocker<>(true);
-
     protected final HashMap<String, FontLib> fontlibs = new HashMap<>();
 
     protected HologramTE te;
@@ -45,8 +41,11 @@ public class P_HologramPeripheral implements IPeripheral{
     }
 
     @LuaFunction
-    public final int CreateFrameBuffer(int w, int h){
+    public final int CreateFrameBuffer(int w, int h) throws LuaException {
         int idx = -1;
+
+        if(w > Config.holo_w_mx*2 || h > Config.holo_h_mx*2) throw new LuaException("Max resolution is %d x %d, out of range.".formatted(Config.holo_w_mx*2, Config.holo_h_mx*2));
+
         for (int i = 0; i < buffers.length; i++) {
             if(buffers[i] == null){
                 buffers[i] = new DefaultFrameBufferImpl(w,h);
@@ -740,7 +739,13 @@ public class P_HologramPeripheral implements IPeripheral{
     }
 
     @LuaFunction
-    public final void Flush(){
+    public final void Flush(IArguments param) throws LuaException {
+        if (param.count() > 0){
+            if (param.getBoolean(0)){
+                te.fullSync.set(true);
+                return;
+            }
+        }
         te.needSync.set(true);
     }
 

@@ -1,8 +1,10 @@
 {
   "block.void_power.engine_controller": "引擎控制器(电脑外设)",
   "block.void_power.void_engine": "虚空引擎",
-  "block.void_power.glass_screen":"玻璃屏幕(电脑外设)",
-  "item.void_power.vr_glasses": "VR Glasses",
+  "block.void_power.redstone_receiver":"无线红石信号接收器",
+  "block.void_power.redstone_broadcaster":"无线红石信号发射器",
+  "item.void_power.vr_glasses": "VR眼镜(需绑定全息显示器)",
+  "item.void_power.channel_modifier": "信道修改器",
   "itemGroup.void_power.main": "虚空动力",
   "key_bind.vr_glasses": "开关VR研究"
 }

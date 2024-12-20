@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "void_power:block/redstone_broadcaster/block_0"
+    },
+    "powered=true": {
+      "model": "void_power:block/redstone_broadcaster/block_1"
+    }
+  }
+}

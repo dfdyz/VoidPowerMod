@@ -17,12 +17,14 @@ import java.util.Map;
 
 public class VPShapes {
 
+    public static final VoxelShape FULL_BLOCK = Shapes.join(Shapes.empty(), Shapes.box(0, 0, 0, 1, 1, 1), BooleanOp.OR);
 
 
     public static final VoxelShaper
             VOID_ENGINE = new AllShapes.Builder(VoidEngineBlock.Shape()).forHorizontal(Direction.NORTH),
             ENGINE_CONTROLLER = new AllShapes.Builder(EngineControllerBlock.Shape()).forHorizontal(Direction.NORTH),
             HOLOGRAM = new AllShapes.Builder(HologramBlock.Shape()).forHorizontal(Direction.NORTH),
+            //FULL_BLOCK = new AllShapes.Builder(HologramBlock.Shape()).forHorizontal(Direction.NORTH),
             GLASS_SCREEN_O = new AllShapes.Builder(GlassScreenBlock.ShapeO()).forHorizontal(Direction.NORTH)
     ;
 

@@ -57,7 +57,7 @@ public class P_EngineController implements IPeripheral {
     }
 
     public void PushEvent(PhysShipImpl physShip){
-        LuaPhysShip.ShipPhysStateSnapshot snapshot = LuaPhysShip.createSnapshot(physShip);
+        LuaPhysShip.ShipPhysStateSnapshot snapshot = LuaPhysShip.createSnapshot(physShip, te);
         computers.forEach((c) -> {
             c.queueEvent("phys_tick", new Object[]{new LuaPhysShip(snapshot, physShip, te)});
         });
@@ -170,6 +170,13 @@ public class P_EngineController implements IPeripheral {
     public void setIdle(boolean idle){
         if(te.hasShip()){
             te.getCtrl().setIdle(idle);
+        }
+    }
+
+    @LuaFunction
+    public void forcedDisableIdle(boolean b){
+        if(te.hasShip()){
+            te.getCtrl().disableIdle(b);
         }
     }
 

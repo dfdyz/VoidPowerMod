@@ -68,15 +68,15 @@ modId="create"
 mandatory=true
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
 versionRange="[0.5.1,)"
-ordering="NONE"
+ordering="AFTER"
 side="BOTH"
 
 [[dependencies.${mod_id}]]
 modId="computercraft"
 mandatory=true
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
-versionRange="[1.109.3,)"
-ordering="NONE"
+versionRange="[1.113.1,)"
+ordering="AFTER"
 side="BOTH"
 
 

@@ -95,6 +95,4 @@ public class SP_HologramUpdate_B {
             }
         });
     }
-
-
 }

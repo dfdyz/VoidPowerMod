@@ -5,6 +5,7 @@ import com.dfdyz.void_power.utils.CCUtils;
 import com.dfdyz.void_power.utils.VSUtils;
 import com.dfdyz.void_power.world.blocks.engine_controller.EngineControllerBlock;
 import com.dfdyz.void_power.world.blocks.engine_controller.EngineControllerTE;
+import com.dfdyz.void_power.world.blocks.hologram.HologramTE;
 import dan200.computercraft.api.lua.LuaFunction;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -24,41 +25,14 @@ public class LuaPhysShip {
     private final PhysShipImpl physShip;
     private final ShipPhysStateSnapshot shipSnapshot;
     //private final Quaternionf rot;
-    private final Matrix3d ctrl_rotation;
+    //private final double[][] ctrl_rotation;
 
     static final Vector3d Up = new Vector3d(0,1,0);
 
     public LuaPhysShip(ShipPhysStateSnapshot physShip, PhysShipImpl ship, EngineControllerTE te){
         this.shipSnapshot = physShip;
         this.physShip = ship;
-        //this.rot = te.getBlockState().getValue(EngineControllerBlock.FACING).getRotation();
-        Matrix3d rm = shipSnapshot.rot.get(new Matrix3d());
-
-        var face = te.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
-        if(face == Direction.NORTH){
-            ctrl_rotation = rm;
-        }
-        else if(face == Direction.SOUTH){
-            ctrl_rotation = new Matrix3d(
-                    -rm.m00, rm.m01, -rm.m02,
-                    -rm.m10, rm.m11, -rm.m12,
-                    -rm.m20, rm.m21, -rm.m22
-            );
-        }
-        else if(face == Direction.EAST) {
-            ctrl_rotation = new Matrix3d(
-                    -rm.m02, rm.m01, rm.m00,
-                    -rm.m12, rm.m11, rm.m10,
-                    -rm.m22, rm.m21, rm.m20
-            );
-        }
-        else {
-            ctrl_rotation = new Matrix3d(
-                    rm.m02, rm.m01, -rm.m00,
-                    rm.m12, rm.m11, -rm.m10,
-                    rm.m22, rm.m21, -rm.m20
-            );
-        }
+        //shipSnapshot.ctrl_rot;
     }
 
     @LuaFunction
@@ -69,9 +43,11 @@ public class LuaPhysShip {
         );
     }
 
+
+
     public record ShipPhysStateSnapshot(Vector3dc vel, Vector3dc omg, Vector3dc pos,
                                         Quaterniondc rot,
-                                        double yaw, double pitch, double roll,
+                                        double[][] ctrl_rot,
                                         Matrix3dc tensor, double mass
     ){
     }
@@ -83,40 +59,77 @@ public class LuaPhysShip {
                 "velocity", CCUtils.dumpVec3(shipSnapshot.vel),
                 "omega", CCUtils.dumpVec3(shipSnapshot.omg),
                 "pos", CCUtils.dumpVec3(shipSnapshot.pos),
-                "rot", CCUtils.dumpVec4(shipSnapshot.rot),
-                "yaw", shipSnapshot.yaw,
-                "pitch", shipSnapshot.pitch,
-                "roll", shipSnapshot.roll
+                "rot", CCUtils.dumpVec4(shipSnapshot.rot)
         );
     }
 
+    @LuaFunction
+    public final Map<String, Object> getControllerFacesVec() {
+        return Map.of(
+                "right", CCUtils.dumpVec3(shipSnapshot.ctrl_rot[0][0], shipSnapshot.ctrl_rot[1][0], shipSnapshot.ctrl_rot[2][0]),
+                "up", CCUtils.dumpVec3(shipSnapshot.ctrl_rot[0][1], shipSnapshot.ctrl_rot[1][1], shipSnapshot.ctrl_rot[2][1]),
+                "front", CCUtils.dumpVec3(-shipSnapshot.ctrl_rot[0][2], -shipSnapshot.ctrl_rot[1][2], -shipSnapshot.ctrl_rot[2][2])
+        );
+    }
 
     @LuaFunction
-    public final Map<String, Object> getControllerFacesVec(){
+    public final Map<String, Object> getControllerEuler() {
         return Map.of(
-                "right", CCUtils.dumpVec3(ctrl_rotation.m00(), ctrl_rotation.m10(), ctrl_rotation.m20()),
-                "up", CCUtils.dumpVec3(ctrl_rotation.m01(), ctrl_rotation.m11(), ctrl_rotation.m21()),
-                "front", CCUtils.dumpVec3(-ctrl_rotation.m02(), -ctrl_rotation.m12(), -ctrl_rotation.m22())
+                "yaw", Math.atan2(shipSnapshot.ctrl_rot[0][2], shipSnapshot.ctrl_rot[2][2]),
+                "pitch", -Math.asin(shipSnapshot.ctrl_rot[1][2]),
+                "roll", Math.atan2(shipSnapshot.ctrl_rot[1][0], shipSnapshot.ctrl_rot[1][1])
         );
     }
 
     @LuaFunction
     public final List<List<Double>> getControllerRotationMat(){
-        return CCUtils.dumpMat3(ctrl_rotation);
+        return CCUtils.dumpMat3(shipSnapshot.ctrl_rot);
     }
 
-    public static ShipPhysStateSnapshot createSnapshot(PhysShipImpl ship){
-        double[][] rotMatrix = VSUtils.getRotationMatrixRaw(ship);
+    public static ShipPhysStateSnapshot createSnapshot(PhysShipImpl ship, EngineControllerTE te){
+
         PoseVel poseVel = ship.getPoseVel();
         PhysInertia inertia = ship.getInertia();
+
+        double[][] ctrl_rotation;
+        Matrix3d rm = poseVel.getRot().get(new Matrix3d());
+
+        Direction face = te.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
+        if(face.equals(Direction.NORTH)){
+            ctrl_rotation = new double[][]{
+                    { rm.m00, rm.m10, rm.m20 },
+                    { rm.m01, rm.m11, rm.m21 },
+                    { rm.m02, rm.m12, rm.m22 }
+            };
+        }
+        else if(face.equals(Direction.SOUTH)){
+            ctrl_rotation = new double[][]{
+                    { -rm.m00, rm.m10, -rm.m20 },
+                    { -rm.m01, rm.m11, -rm.m21 },
+                    { -rm.m02, rm.m12, -rm.m22 }
+            };
+        }
+        else if(face == Direction.EAST) {
+            ctrl_rotation = new double[][]{
+                    { rm.m20, rm.m10, -rm.m00 },
+                    { rm.m21, rm.m11, -rm.m01 },
+                    { rm.m22, rm.m12, -rm.m02 }
+            };
+        }
+        else {
+            ctrl_rotation = new double[][]{
+                    { -rm.m20, rm.m10, rm.m00 },
+                    { -rm.m21, rm.m11, rm.m01 },
+                    { -rm.m22, rm.m12, rm.m02 }
+            };
+        }
+
         return new ShipPhysStateSnapshot(
                 new Vector3d(poseVel.getVel()),
                 new Vector3d(poseVel.getOmega()),
                 new Vector3d(poseVel.getPos()),
                 new Quaterniond(poseVel.getRot()),
-                Mth.atan2(rotMatrix[0][2], rotMatrix[2][2]),
-                Mth.atan2(rotMatrix[1][0], rotMatrix[1][1]),
-                Mth.atan2(rotMatrix[1][2], rotMatrix[1][1]),
+                ctrl_rotation,
                 new Matrix3d(inertia.getMomentOfInertiaTensor()),
                 inertia.getShipMass()
         );

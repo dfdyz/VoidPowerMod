@@ -5,6 +5,7 @@ import com.dfdyz.void_power.registry.VPShapes;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -14,9 +15,11 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -79,6 +82,9 @@ public class HologramBlock extends HorizontalDirectionalBlock implements IBE<Hol
                 //Minecraft.getInstance().setScreen(new HologramGUI(te));
                 NetworkHooks.openScreen((ServerPlayer) player, te, te.getBlockPos());
                 return InteractionResult.SUCCESS;
+
+                //level.getEntities(EntityTypeTest.forClass(LivingEntity.class), new AABB(/*范围自己设置*/), LivingEntity::isAlive);
+
             }
         }
         return InteractionResult.PASS;

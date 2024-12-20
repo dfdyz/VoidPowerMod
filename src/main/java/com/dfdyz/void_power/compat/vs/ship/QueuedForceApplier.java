@@ -5,16 +5,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.Queues;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 import org.joml.Vector3dc;
 import org.valkyrienskies.core.api.ships.PhysShip;
 import org.valkyrienskies.core.api.ships.ServerShip;
 import org.valkyrienskies.core.api.ships.ShipForcesInducer;
 import org.valkyrienskies.core.impl.game.ships.PhysShipImpl;
 import org.valkyrienskies.core.util.VSCoreUtilKt;
+import org.valkyrienskies.physics_api.PoseVel;
 
 import java.util.Queue;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
+@SuppressWarnings("ClassEscapesDefinedScope")
 @JsonAutoDetect(
         fieldVisibility = JsonAutoDetect.Visibility.ANY,
         getterVisibility = JsonAutoDetect.Visibility.NONE,
@@ -47,9 +51,16 @@ public class QueuedForceApplier implements ShipForcesInducer {
         return obj;
     }
 
+    @JsonIgnore PhysShip physShip;
+    @JsonIgnore Vector3d velocity = new Vector3d();
+    @JsonIgnore Vector3d omega = new Vector3d();
     @Override
     public void applyForces(@NotNull PhysShip physShip) {
         Mass = ((PhysShipImpl)physShip).getInertia().getShipMass();
+        this.physShip = physShip;
+        PoseVel pv = ((PhysShipImpl) physShip).getPoseVel();
+        velocity.set(pv.getVel());
+        omega.set(pv.getOmega());
         if(!Enabled) {
             invForces.clear();
             invTorques.clear();
@@ -59,19 +70,72 @@ public class QueuedForceApplier implements ShipForcesInducer {
             rotPosForces.clear();
             return;
         }
-        pollUntilEmpty(invForces, physShip::applyInvariantForce);
-        pollUntilEmpty(invTorques, physShip::applyInvariantTorque);
-        pollUntilEmpty(invPosForces , (pos) -> physShip.applyInvariantForceToPos(pos.force, pos.pos) );
-        pollUntilEmpty(rotForces,physShip::applyRotDependentForce);
-        pollUntilEmpty(rotTorques,physShip::applyRotDependentTorque);
-        pollUntilEmpty(rotPosForces, (pos) -> physShip.applyRotDependentForceToPos(pos.force, pos.pos) );
+        pollUntilEmpty(invForces, this::_applyInvariantForce);
+        pollUntilEmpty(invTorques, this::_applyInvariantTorque);
+        pollUntilEmpty(invPosForces ,this::_applyInvariantForceToPos);
+        pollUntilEmpty(rotForces, this::_applyRotDependentForce);
+        pollUntilEmpty(rotTorques, this::_applyRotDependentTorque);
+        pollUntilEmpty(rotPosForces, this::_applyRotDependentForceToPos);
     }
 
-    private <T> void pollUntilEmpty(Queue<T> queue, Consumer<T> consumer){
+    double maxValue = Double.MAX_VALUE;
+    public boolean _checkVelocity(Vector3dc f){
+        return velocity.lengthSquared() > maxValue || !f.isFinite();
+    }
+
+    public boolean _checkOmega(Vector3dc f){
+        return omega.lengthSquared() > maxValue || !f.isFinite();
+    }
+
+    public boolean _applyInvariantForce(Vector3dc f){
+        if(_checkVelocity(f)){
+            return true;
+        }
+        physShip.applyInvariantForce(f);
+        return false;
+    }
+    public boolean _applyInvariantTorque(Vector3dc f){
+        if(_checkOmega(f)){
+            return true;
+        }
+        physShip.applyInvariantTorque(f);
+        return false;
+    }
+    public boolean _applyInvariantForceToPos(ForceAtPos f){
+        if(_checkVelocity(f.force) || !f.pos.isFinite()){
+            return true;
+        }
+        physShip.applyInvariantForceToPos(f.force, f.pos);
+        return false;
+    }
+
+    public boolean _applyRotDependentForce(Vector3dc f){
+        if(_checkVelocity(f)){
+            return true;
+        }
+        physShip.applyRotDependentForce(f);
+        return false;
+    }
+    public boolean _applyRotDependentTorque(Vector3dc f){
+        if(_checkOmega(f)){
+            return true;
+        }
+        physShip.applyRotDependentTorque(f);
+        return false;
+    }
+    public boolean _applyRotDependentForceToPos(ForceAtPos f){
+        if(_checkVelocity(f.force) || !f.pos.isFinite()){
+            return true;
+        }
+        physShip.applyRotDependentForceToPos(f.force, f.pos);
+        return false;
+    }
+
+    private <T> void pollUntilEmpty(Queue<T> queue, Function<T, Boolean> consumer){
         T elem;
         while (!queue.isEmpty()){
             elem = queue.poll();
-            consumer.accept(elem);
+            if(consumer.apply(elem)) return;
         }
     }
 
@@ -104,6 +168,5 @@ public class QueuedForceApplier implements ShipForcesInducer {
     }
 
     private record ForceAtPos(Vector3dc force, Vector3dc pos){
-
     }
 }

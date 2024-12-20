@@ -12,6 +12,7 @@ import com.dfdyz.void_power.network.SP.SP_HologramPoseUpdate;
 import com.dfdyz.void_power.network.SP.SP_HologramRename;
 import com.dfdyz.void_power.network.SP.SP_HologramUpdate_A;
 import com.dfdyz.void_power.network.SP.SP_HologramUpdate_B;
+import com.dfdyz.void_power.registry.VPTileEntities;
 import com.dfdyz.void_power.utils.IntBuffer;
 import com.dfdyz.void_power.utils.ParamUtils;
 import com.dfdyz.void_power.utils.SyncLocker;
@@ -33,6 +34,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -47,6 +49,11 @@ import static com.dfdyz.void_power.utils.ByteUtils.maxLengthPerPack;
 public class HologramTE extends SmartBlockEntity implements MenuProvider, IFrameBuffer{
     public Behavior behavior;
 
+    @Override
+    public AABB getRenderBoundingBox() {
+        return INFINITE_EXTENT_AABB;
+    }
+
     public P_HologramPeripheral peripheral;
     protected LazyOptional<IPeripheral> peripheralCap;
     private int[] buffer;
@@ -60,6 +67,7 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider, IFrame
     public float scalex = 1, scaley = 1;
     public final SyncLocker<Boolean> transformDirty = new SyncLocker<>(false);
     public final SyncLocker<Boolean> needSync = new SyncLocker<>(true);
+    public final SyncLocker<Boolean> fullSync = new SyncLocker<>(true);
 
     public String name = UUID.randomUUID().toString();
 
@@ -116,11 +124,17 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider, IFrame
     int force_full_sync_ticker = 0;
     public void serverSync(){
         if(peripheral == null) return;
-        if(force_full_sync_ticker < Config.ForceFullUpdateTick){
+        if(force_full_sync_ticker < Config.ForceFullUpdateTick * 3){
             ++force_full_sync_ticker;
         }
-        if(needSync.getThenSet(false)){
-            if(Config.ForceFullUpdateTick > 0 && force_full_sync_ticker >= Config.ForceFullUpdateTick){
+        if(fullSync.getThenSet(false)){
+            if(Config.EnableForceFullUpdate && force_full_sync_ticker >= Config.ForceFullUpdateTick){
+                force_full_sync_ticker = 0;
+                FullSyncPack();
+            }
+        }
+        else if(needSync.getThenSet(false)){
+            if(Config.EnableForceFullUpdate && force_full_sync_ticker >= Config.ForceFullUpdateTick * 3){
                 force_full_sync_ticker = 0;
                 FullSyncPack();
             }
@@ -136,6 +150,12 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider, IFrame
     public void FullSyncPack(){
        // System.out.println("Full Update");
         int[] buffer = this.buffer;
+        if(buffer_last == null){
+            if(getLevel() != null && !getLevel().isClientSide){
+                this.buffer_last = buffer.clone();
+            }
+            return;
+        }
         int offset = 0;
 
         while (offset < buffer.length){
@@ -229,11 +249,7 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider, IFrame
                             if(dirty_len + 2 < capability){
                                 range_buffer.push(range_start);
                                 range_buffer.push(dirty_len);
-
-                                int t_len = range_start + dirty_len;
-                                for (int j = range_start; j < t_len; j++) {
-                                    range_buffer.push(buffer[j]);
-                                }
+                                range_buffer.push(buffer, range_start, dirty_len);
                                 capability -= dirty_len + 2;
                             }
                             else { // 包满了
@@ -242,14 +258,9 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider, IFrame
                                     int len = Math.min(dirty_len, capability);
                                     range_buffer.push(range_start);
                                     range_buffer.push(len);
-
-                                    int t_len = range_start + len;
-                                    for (int j = range_start; j < t_len; j++) {
-                                        range_buffer.push(buffer[j]);
-                                    }
+                                    range_buffer.push(buffer, range_start, len);
 
                                     dirty_len -= len;
-
                                     // 发包
                                     //System.out.println("FP");
                                     if(len == capability){
@@ -304,11 +315,7 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider, IFrame
             if(dirty_len + 2 < capability){
                 range_buffer.push(range_start);
                 range_buffer.push(dirty_len);
-
-                int t_len = range_start + dirty_len;
-                for (int j = range_start; j < t_len; j++) {
-                    range_buffer.push(buffer[j]);
-                }
+                range_buffer.push(buffer, range_start, dirty_len);
 
                 PacketManager.sendToAllPlayerTrackingThisBlock(
                         new SP_HologramUpdate_A(this, range_buffer.getCutData()),
@@ -322,12 +329,7 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider, IFrame
                     int len = Math.min(dirty_len, capability);
                     range_buffer.push(range_start);
                     range_buffer.push(len);
-
-                    int t_len = range_start + len;
-                    for (int j = range_start; j < t_len; j++) {
-                        range_buffer.push(buffer[j]);
-                    }
-
+                    range_buffer.push(buffer, range_start, len);
                     dirty_len -= capability;
                     range_start += capability;
                     // 发包
@@ -452,6 +454,14 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider, IFrame
         initColor = col;
     }
 
+    @Override
+    public void remove() {
+        super.remove();
+
+        peripheral = null;
+        peripheralCap = null;
+    }
+
     //todo
     public void returnFullUpdatePack(ServerPlayer player){
         int[] buffer = this.buffer;
@@ -482,9 +492,7 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider, IFrame
                             bf
                     ),
                     player);
-
         }
-
         PacketManager.sendToPlayer(new SP_HologramPoseUpdate(this), player);
     }
 
@@ -504,7 +512,7 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider, IFrame
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
-        return new HologramMenu(i, this);
+        return VPTileEntities.HOLOGRAM_GUI.create(i, inventory);
     }
 
     @Override

@@ -3,6 +3,11 @@
   "block.void_power.void_engine": "Void Engine",
   "block.void_power.glass_screen":"GlassScreen",
   "item.void_power.vr_glasses": "VR Glasses",
+  "item.void_power.channel_modifier": "Channel Modifier",
+
+
+
   "itemGroup.void_power.main": "Void Power",
+
   "key_bind.vr_glasses": "Toggle VR Glasses"
 }
