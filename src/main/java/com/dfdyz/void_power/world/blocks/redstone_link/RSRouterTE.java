@@ -65,7 +65,8 @@ public class RSRouterTE extends SmartBlockEntity {
         return super.getCapability(cap, side);
     }
 
-    public int getPortMode(int i){
+    public int getPortMode(int i) throws LuaException {
+        if(i< 0 || i >= maxChannels) throw new LuaException("Port id out of range. max is 0-"+ (maxChannels-1));
         ITickableHolder h = holders[i];
         if(h == null){
             return 0; // closed
@@ -78,7 +79,8 @@ public class RSRouterTE extends SmartBlockEntity {
         }
     }
 
-    public boolean openPort(int i, ResourceLocation channel, boolean mode){
+    public boolean openPort(int i, ResourceLocation channel, boolean mode) throws LuaException {
+        if(i< 0 || i >= maxChannels) throw new LuaException("Port id out of range. max is 0-"+ (maxChannels-1));
         if(holders[i] != null){
             return false;
         }
@@ -102,11 +104,12 @@ public class RSRouterTE extends SmartBlockEntity {
     }
 
     public void closePort(int i) throws LuaException {
-        if(i >= maxChannels) throw new LuaException("Port id out of range. max is "+maxChannels);
+        if(i< 0 || i >= maxChannels) throw new LuaException("Port id out of range. max is 0-"+ (maxChannels-1));
         channels[i] = ChannelNetworkHandler.NULL_CHANNEL;
     }
 
-    public int getPower(int p){
+    public int getPower(int p) throws LuaException {
+        if(p< 0 || p >= maxChannels) throw new LuaException("Port id out of range. max is 0-"+ (maxChannels-1));
         ITickableHolder h = holders[p];
         if(h != null){
             return h.getPower();
@@ -120,7 +123,9 @@ public class RSRouterTE extends SmartBlockEntity {
         }
     }
 
-    public boolean setPower(int port, int power){
+    public boolean setPower(int port, int power) throws LuaException {
+        if(port< 0 || port >= maxChannels) throw new LuaException("Port id out of range 0-"+ (maxChannels-1));
+        if(power < 0 || power > 15) throw new LuaException("Power out of range 0-15");
         ITickableHolder h = holders[port];
         if(h instanceof RouterSender s){
             s.setPower(power);

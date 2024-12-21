@@ -30,17 +30,17 @@ public class P_RSRouter implements IPeripheral {
     }
 
     @LuaFunction
-    public int getPortMode(int port_id){
+    public int getPortMode(int port_id) throws LuaException {
         return te.getPortMode(port_id);
     }
 
     @LuaFunction
-    public int getPower(int port_id){
+    public int getPower(int port_id) throws LuaException {
         return te.getPower(port_id);
     }
 
     @LuaFunction
-    public boolean setPower(int port_id, int power){
+    public boolean setPower(int port_id, int power) throws LuaException {
         return te.setPower(port_id, power);
     }
 
