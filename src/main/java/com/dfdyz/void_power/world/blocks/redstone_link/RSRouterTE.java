@@ -35,7 +35,7 @@ public class RSRouterTE extends SmartBlockEntity {
     public final ITickableHolder[] holders;
 
 
-    static final int maxChannels = 16;
+    public static final int maxChannels = 16;
 
     public final SyncLocker<Boolean> dirty = new SyncLocker<>(true);
     final int[] powers = new int[maxChannels];

@@ -49,6 +49,11 @@ public class P_RSRouter implements IPeripheral {
         te.process();
     }
 
+    @LuaFunction
+    public int getPortCount(){
+        return RSRouterTE.maxChannels;
+    }
+
     @Override
     public String getType() {
         return "redstone_router";
