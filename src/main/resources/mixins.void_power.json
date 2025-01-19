@@ -12,6 +12,7 @@
     "MixinNetworkTerminal",
     "MixinPeripheralProxyTE_Kt",
     "MixinTerminal",
+    "MixinTerminalState",
     "MixinTweakedControllerTE"
   ],
   "client": [

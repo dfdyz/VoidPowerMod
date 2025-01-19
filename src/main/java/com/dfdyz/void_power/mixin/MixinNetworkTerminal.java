@@ -2,7 +2,9 @@ package com.dfdyz.void_power.mixin;
 
 import com.dfdyz.void_power.patched.IPatchedNetTermAccessor;
 import com.dfdyz.void_power.patched.IPatchedTermAccessor;
+import com.dfdyz.void_power.patched.IPatchedTerminalState;
 import dan200.computercraft.shared.computer.terminal.NetworkedTerminal;
+import dan200.computercraft.shared.computer.terminal.TerminalState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,17 +18,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinNetworkTerminal implements IPatchedNetTermAccessor {
 
     @Inject(method = "write", at = @At("RETURN"))
-    public void patchWrite(FriendlyByteBuf buffer, CallbackInfo ci){
-        IPatchedTermAccessor accessor = (IPatchedTermAccessor)this;
-        buffer.writeBoolean(accessor.void_power$GetTransMode());
-        buffer.writeChar(accessor.void_power$GetTransColor());
+    public void patchWrite(CallbackInfoReturnable<TerminalState> cir){
+        var state = cir.getReturnValue();
+        if(state instanceof IPatchedTerminalState ipts){
+            IPatchedTermAccessor accessor = (IPatchedTermAccessor)this;
+            ipts.void_power$SetTransMode(accessor.void_power$GetTransMode());
+            ipts.void_power$SetTransColor(accessor.void_power$GetTransColor());
+        }
     }
 
     @Inject(method = "read", at = @At("RETURN"))
-    public void patchRead(FriendlyByteBuf buffer, CallbackInfo ci){
-        IPatchedTermAccessor accessor = (IPatchedTermAccessor)this;
-        accessor.void_power$SetTransMode(buffer.readBoolean());
-        accessor.void_power$SetTransColor(buffer.readChar());
+    public void patchRead(TerminalState state, CallbackInfo ci){
+        if(state instanceof IPatchedTerminalState ipts){
+            IPatchedTermAccessor accessor = (IPatchedTermAccessor)this;
+            accessor.void_power$SetTransMode(ipts.void_power$GetTransMode());
+            accessor.void_power$SetTransColor(ipts.void_power$GetTransColor());
+        }
     }
 
     @Inject(method = "writeToNBT", at = @At("RETURN"))
@@ -46,7 +53,7 @@ public class MixinNetworkTerminal implements IPatchedNetTermAccessor {
     public void void_power$SetTransMode2(boolean m) {
         IPatchedTermAccessor accessor = (IPatchedTermAccessor)this;
         accessor.void_power$SetTransMode(m);
-        System.out.println("set m");
+        //System.out.println("set m");
         this.void_power$setChanged2();
     }
 
@@ -54,7 +61,7 @@ public class MixinNetworkTerminal implements IPatchedNetTermAccessor {
     public void void_power$SetTransColor2(char c) {
         IPatchedTermAccessor accessor = (IPatchedTermAccessor)this;
         accessor.void_power$SetTransColor(c);
-        System.out.println("set c");
+        //System.out.println("set c");
         this.void_power$setChanged2();
     }
 

@@ -8,28 +8,28 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(value = Terminal.class, remap = false)
 public class MixinTerminal implements IPatchedTermAccessor {
     @Unique
-    private boolean TransMode = true;
+    private boolean void_power$TransMode = true;
 
     @Unique
-    private char TransColor = 'f';
+    private char void_power$TransColor = 'f';
 
     @Override
     public boolean void_power$GetTransMode() {
-        return TransMode;
+        return void_power$TransMode;
     }
 
     @Override
     public char void_power$GetTransColor() {
-        return TransColor;
+        return void_power$TransColor;
     }
 
     @Override
     public void void_power$SetTransMode(boolean m) {
-        TransMode = m;
+        void_power$TransMode = m;
     }
 
     @Override
     public void void_power$SetTransColor(char c) {
-        TransColor = c;
+        void_power$TransColor = c;
     }
 }
