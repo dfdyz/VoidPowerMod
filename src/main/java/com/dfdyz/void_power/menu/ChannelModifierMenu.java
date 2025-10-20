@@ -5,7 +5,6 @@ import com.dfdyz.void_power.network.PacketManager;
 import com.dfdyz.void_power.registry.VPItems;
 import com.dfdyz.void_power.registry.VPTileEntities;
 import com.dfdyz.void_power.world.redstone.ChannelNetworkHandler;
-import com.ethlo.time.internal.EthloITU;
 import com.simibubi.create.foundation.gui.menu.MenuBase;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;

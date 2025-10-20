@@ -2,7 +2,6 @@ package com.dfdyz.void_power.world.blocks.engine_controller;
 
 import com.dfdyz.void_power.registry.VPShapes;
 import com.dfdyz.void_power.registry.VPTileEntities;
-import com.dfdyz.void_power.world.blocks.void_engine.VoidEngineTE;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -17,15 +16,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.valkyrienskies.core.impl.shadow.F;
 
-public class EngineControllerBlock extends HorizontalDirectionalBlock implements IBE<EngineControllerTE> {
-    public static final String ID = "engine_controller";
+public class EngineControllerBlock /*extends HorizontalDirectionalBlock implements IBE<EngineControllerTE>*/ {
+    /*public static final String ID = "engine_controller";
 
     public EngineControllerBlock(Properties properties) {
         super(properties);
     }
+
 
     public static VoxelShape Shape() {
         VoxelShape shape = Shapes.empty();
@@ -63,5 +61,6 @@ public class EngineControllerBlock extends HorizontalDirectionalBlock implements
                 .setValue(FACING, context.getHorizontalDirection());
     }
 
+*/
 
 }

@@ -1,16 +1,33 @@
 package com.dfdyz.void_power.client.renderer.tileentities.hologram;
 
+import com.dfdyz.void_power.client.renderer.tileentities.SimpleBlockVisual;
 import com.dfdyz.void_power.world.blocks.hologram.HologramTE;
-import com.jozufozu.flywheel.api.MaterialManager;
-import com.jozufozu.flywheel.backend.instancing.blockentity.BlockEntityInstance;
+import dev.engine_room.flywheel.api.instance.Instance;
+import dev.engine_room.flywheel.api.visualization.VisualizationContext;
+import org.jetbrains.annotations.Nullable;
 
-public class HologramInstance extends BlockEntityInstance<HologramTE> {
-    public HologramInstance(MaterialManager materialManager, HologramTE blockEntity) {
-        super(materialManager, blockEntity);
+import java.util.function.Consumer;
+
+public class HologramInstance extends SimpleBlockVisual<HologramTE> {
+
+
+    public HologramInstance(VisualizationContext context, HologramTE blockEntity, float partialTick) {
+        super(context, blockEntity, partialTick);
+    }
+
+
+    @Override
+    public void collectCrumblingInstances(Consumer<@Nullable Instance> consumer) {
+
     }
 
     @Override
-    protected void remove() {
+    public void update(float v) {
+
+    }
+
+    @Override
+    public void delete() {
 
     }
 }

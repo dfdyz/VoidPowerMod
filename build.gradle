@@ -157,6 +157,10 @@ repositories {
         maven { url = "https://maven.bawnorton.com/releases" }
     }
 
+    maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
+    maven { url = "https://maven.ithundxr.dev/mirror" } // Registrate
+    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
+
     mavenCentral()
 }
 
@@ -175,19 +179,24 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     // create dependencies
-    implementation fg.deobf("com.simibubi.create:create-${create_minecraft_version}:${create_version}:slim") { transitive = false }
-    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}")
-    implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
+    implementation(fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false })
+    implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}"))
+    compileOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}"))
+    runtimeOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}"))
+    implementation(fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}"))
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
+    implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
 
     // vs2 dependencies
-    implementation fg.deobf("org.valkyrienskies:valkyrienskies-120-forge:${vs2_version}") { transitive = false }
+/*    implementation fg.deobf("org.valkyrienskies:valkyrienskies-120-forge:${vs2_version}") { transitive = false }
 
     compileOnly ("org.valkyrienskies.core:api:${vs_core_version}")
     compileOnly ("org.valkyrienskies.core:api-game:${vs_core_version}")
     compileOnly ("org.valkyrienskies.core:util:${vs_core_version}")
     compileOnly ("org.valkyrienskies.core:impl:${vs_core_version}")
 
-    implementation "com.fasterxml.jackson.core:jackson-annotations:2.13.3"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:2.13.3"*/
+
     implementation "thedarkcolour:kotlinforforge:$forge_kotlin_version"
 
     //implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.10"
@@ -197,7 +206,7 @@ dependencies {
     implementation("org.joml:joml-primitives:1.10.0") { transitive = false }
 
     // cc:t dependencies
-    implementation fg.deobf("libs:cc-tweaked-1.20.1-forge:1.114.3")
+    implementation fg.deobf("libs:cc-tweaked-1.20.1-forge:${cc_version}")
 
     //
     implementation fg.deobf("libs:peripheralium-forge:1.20.1-0.6.15")
@@ -210,14 +219,14 @@ dependencies {
     }
 
     // Tweaked Controllers dependencies
-    implementation fg.deobf("curse.maven:create-tweaked-controllers-898849:5206625")
+    compileOnly fg.deobf("curse.maven:create-tweaked-controllers-898849:5206625")
 
     // Toms peripheral
     //implementation fg.deobf("curse.maven:toms-peripheral-931210:5265063")
 
     // VS CW
     runtimeOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
-    runtimeOnly fg.deobf("curse.maven:clockwork-807792:5580456")
+    //runtimeOnly fg.deobf("curse.maven:clockwork-807792:5580456")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
@@ -269,15 +278,33 @@ tasks.named('jar', Jar).configure {
                 "MixinConfigs": "mixins.void_power.json"
         ])
     }
-
     // This is the preferred method to reobfuscate your jar file
     finalizedBy 'reobfJar'
 }
+
 
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing:
 // tasks.named('publish').configure {
 //     dependsOn 'reobfJar'
 // }
+
+tasks.named('jarJar').configure {
+    manifest {
+        attributes([
+                'Specification-Title'     : mod_id,
+                'Specification-Vendor'    : mod_authors,
+                'Specification-Version'   : '1', // We are version 1 of ourselves
+                'Implementation-Title'    : project.name,
+                'Implementation-Version'  : project.jar.archiveVersion,
+                'Implementation-Vendor'   : mod_authors,
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs": "mixins.void_power.json"
+        ])
+    }
+
+    finalizedBy 'reobfJarJar'
+}
+
 
 // Example configuration to allow publishing using the maven-publish plugin
 publishing {

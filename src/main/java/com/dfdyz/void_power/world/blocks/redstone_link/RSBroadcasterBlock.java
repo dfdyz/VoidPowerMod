@@ -4,7 +4,7 @@ import com.dfdyz.void_power.registry.VPShapes;
 import com.dfdyz.void_power.registry.VPTileEntities;
 import com.dfdyz.void_power.world.redstone.ChannelNetworkHandler;
 import com.simibubi.create.foundation.block.IBE;
-import com.simibubi.create.foundation.utility.Iterate;
+import net.createmod.catnip.data.Iterate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;

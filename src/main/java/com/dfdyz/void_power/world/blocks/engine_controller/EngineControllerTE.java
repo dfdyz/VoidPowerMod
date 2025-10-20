@@ -1,5 +1,5 @@
 package com.dfdyz.void_power.world.blocks.engine_controller;
-
+/*
 import com.dfdyz.void_power.compat.cct.peripherals.P_EngineController;
 import com.dfdyz.void_power.compat.vs.ship.EngineController;
 import com.dfdyz.void_power.compat.vs.ship.QueuedForceApplier;
@@ -20,13 +20,13 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 import org.valkyrienskies.core.api.ships.ServerShip;
 import org.valkyrienskies.core.impl.game.ships.PhysShipImpl;
-import org.valkyrienskies.mod.common.VSGameUtilsKt;
+import org.valkyrienskies.mod.common.VSGameUtilsKt;*/
 
 
 import java.util.List;
 
-public class EngineControllerTE extends SmartBlockEntity {
-    private P_EngineController peripheral;
+public class EngineControllerTE/* extends SmartBlockEntity */{
+   /* private P_EngineController peripheral;
     private LazyOptional<IPeripheral> peripheralCap;
 
     private ServerShip ship;
@@ -155,5 +155,5 @@ public class EngineControllerTE extends SmartBlockEntity {
 
     public ServerShip getShip(){
         return this.ship;
-    }
+    }*/
 }

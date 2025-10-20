@@ -1,6 +1,6 @@
 package com.dfdyz.void_power.compat.vs.ship;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+/*import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.Queues;
@@ -25,9 +25,9 @@ import java.util.function.Function;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class QueuedForceApplier implements ShipForcesInducer {
-    //@JsonIgnore ServerShip ship;
+@JsonIgnoreProperties(ignoreUnknown = true)*/
+public class QueuedForceApplier /*implements ShipForcesInducer*/ {
+ /*   //@JsonIgnore ServerShip ship;
     @JsonIgnore private final Queue<Vector3dc> invForces = Queues.newConcurrentLinkedQueue();
     @JsonIgnore private final Queue<Vector3dc> invTorques = Queues.newConcurrentLinkedQueue();
     @JsonIgnore private final Queue<Vector3dc> rotForces = Queues.newConcurrentLinkedQueue();
@@ -56,9 +56,11 @@ public class QueuedForceApplier implements ShipForcesInducer {
     @JsonIgnore Vector3d omega = new Vector3d();
     @Override
     public void applyForces(@NotNull PhysShip physShip) {
-        Mass = ((PhysShipImpl)physShip).getInertia().getShipMass();
+        var ship = ((PhysShipImpl)physShip);
+        var inertia = ship.getInertia();
+        var pv = ship.getPoseVel();
+        Mass = inertia.getShipMass();
         this.physShip = physShip;
-        PoseVel pv = ((PhysShipImpl) physShip).getPoseVel();
         velocity.set(pv.getVel());
         omega.set(pv.getOmega());
         if(!Enabled) {
@@ -82,7 +84,6 @@ public class QueuedForceApplier implements ShipForcesInducer {
     public boolean _checkVelocity(Vector3dc f){
         return velocity.lengthSquared() > maxValue || !f.isFinite();
     }
-
     public boolean _checkOmega(Vector3dc f){
         return omega.lengthSquared() > maxValue || !f.isFinite();
     }
@@ -168,5 +169,5 @@ public class QueuedForceApplier implements ShipForcesInducer {
     }
 
     private record ForceAtPos(Vector3dc force, Vector3dc pos){
-    }
+    }*/
 }

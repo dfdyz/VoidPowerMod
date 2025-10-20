@@ -1,6 +1,6 @@
 package com.dfdyz.void_power.utils;
 
-import net.minecraft.core.BlockPos;
+/*import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -10,10 +10,10 @@ import org.joml.Vector4d;
 import org.valkyrienskies.core.api.ships.ServerShip;
 import org.valkyrienskies.core.impl.game.ships.PhysShipImpl;
 import org.valkyrienskies.mod.common.VSGameUtilsKt;
-import org.valkyrienskies.mod.common.world.RaycastUtilsKt;
+import org.valkyrienskies.mod.common.world.RaycastUtilsKt;*/
 
 public class VSUtils {
-    public static double[][] getRotationMatrixRaw(ServerShip ship) {
+    /*public static double[][] getRotationMatrixRaw(ServerShip ship) {
         Matrix4dc transform = ship.getTransform().getShipToWorld();
         double[][] matrix = new double[4][4];
         for (int i = 0; i < 4; i++) {
@@ -75,5 +75,5 @@ public class VSUtils {
         }
 
         else return bp1.distSqr(bp2);
-    }
+    }*/
 }

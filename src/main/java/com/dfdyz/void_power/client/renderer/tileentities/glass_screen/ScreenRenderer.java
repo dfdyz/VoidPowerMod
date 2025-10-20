@@ -144,9 +144,9 @@ public class ScreenRenderer extends SafeBlockEntityRenderer<GlassScreenTE> {
         if (te != null && te.pollChange()) redraw = true;
         if (renderState.createBuffer(MonitorRenderer.VBO)) redraw = true;
 
-        var backgroundBuffer = assertNonNull(renderState.backgroundBuffer);
-        var foregroundBuffer = assertNonNull(renderState.foregroundBuffer);
-        var foregroundNegBuffer = assertNonNull(renderState.foregroundNegBuffer);
+        var backgroundBuffer = renderState.backgroundBuffer;
+        var foregroundBuffer = renderState.foregroundBuffer;
+        var foregroundNegBuffer = renderState.foregroundNegBuffer;
         if (redraw) {
             var size = ScreenRenderUtils.getVertexCount(terminal);
 

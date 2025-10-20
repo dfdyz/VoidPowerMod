@@ -23,7 +23,7 @@ public class VPBlocks {
         REGISTRATE.setCreativeTab(VPCreativeTabs.TAB);
     }
 
-    public static final BlockEntry<VoidEngineBlock> VOID_ENGINE = REGISTRATE.block(VoidEngineBlock.ID, VoidEngineBlock::new)
+ /*   public static final BlockEntry<VoidEngineBlock> VOID_ENGINE = REGISTRATE.block(VoidEngineBlock.ID, VoidEngineBlock::new)
             .initialProperties(SharedProperties::stone)
             .transform(TagGen.axeOrPickaxe())
             .blockstate(BlockStateGen.horizontalBlockProvider(true))
@@ -31,11 +31,11 @@ public class VPBlocks {
             //.transform(BlockStressDefaults.setImpact(8.0))
             .item()
             .transform(customItemModel())
-            .register();
+            .register();*/
 
     //Blocks.GLASS
 
-    public static final BlockEntry<EngineControllerBlock> ENGINE_CONTROLLER_BLOCK = REGISTRATE.block(EngineControllerBlock.ID, EngineControllerBlock::new)
+   /* public static final BlockEntry<EngineControllerBlock> ENGINE_CONTROLLER_BLOCK = REGISTRATE.block(EngineControllerBlock.ID, EngineControllerBlock::new)
             .initialProperties(SharedProperties::stone)
             .transform(TagGen.axeOrPickaxe())
             .blockstate(BlockStateGen.horizontalBlockProvider(true))
@@ -44,7 +44,7 @@ public class VPBlocks {
             .item()
             .transform(customItemModel())
             .register();
-
+*/
 
     public static final BlockEntry<GlassScreenBlock> GLASS_SCREEN_BLOCK = REGISTRATE.block(GlassScreenBlock.ID, GlassScreenBlock::new)
             .initialProperties(SharedProperties::stone)

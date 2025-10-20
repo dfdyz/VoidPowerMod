@@ -1,5 +1,5 @@
 package com.dfdyz.void_power.compat.vs.ship;
-
+/*
 import com.dfdyz.void_power.world.blocks.engine_controller.EngineControllerTE;
 import com.dfdyz.void_power.world.blocks.void_engine.VoidEngineTE;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -22,13 +22,13 @@ import java.util.concurrent.atomic.AtomicReference;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class EngineController implements ShipForcesInducer {
+@JsonIgnoreProperties(ignoreUnknown = true)*/
+public class EngineController /*implements ShipForcesInducer*/ {
     //@JsonIgnore
     //ServerShip ship;
     //@JsonIgnore
     //QueuedForceApplier applier;
-    @JsonIgnore
+   /* @JsonIgnore
     Set<EngineControllerTE> controller = Sets.newConcurrentHashSet();
     @JsonIgnore
     Set<VoidEngineTE> engine = Sets.newConcurrentHashSet();
@@ -85,7 +85,9 @@ public class EngineController implements ShipForcesInducer {
 
     @Override
     public void applyForces(@NotNull PhysShip physShip) {
-        // System.out.println("AAAAAAAA");
+        var ship = ((PhysShipImpl)physShip);
+        var inertia = ship.getInertia();
+
         this.controller.removeIf((e) -> {
             return e.isRemoved();
         });
@@ -98,7 +100,7 @@ public class EngineController implements ShipForcesInducer {
             return e.isRemoved();
         });
 
-        mass = ((PhysShipImpl) physShip).getInertia().getShipMass();
+        mass = inertia.getShipMass();
         AtomicReference<Double> mass_driver = new AtomicReference<>((double) 0);
 
         this.engine.forEach((e) -> {
@@ -128,10 +130,9 @@ public class EngineController implements ShipForcesInducer {
 
     private void IDLE(PhysShipImpl physShip){
         Vector3d omega = physShip.getPoseVel().getOmega().negate(new Vector3d()).mul(10);
-
         Vector3d force = physShip.getPoseVel().getVel().negate(new Vector3d()).mul(mass*1.5).add(0,mass * 10,0);
 
-        Vector3d torque = physShip.getInertia().getMomentOfInertiaTensor().transform(omega);
+        Vector3d torque = physShip.get_inertia().getMomentOfInertiaTensor().transform(omega);
 
         physShip.applyInvariantForce(force);
         physShip.applyInvariantTorque(torque);
@@ -143,5 +144,5 @@ public class EngineController implements ShipForcesInducer {
 
     public double massCanDrive(){
         return massCanDrive;
-    }
+    }*/
 }

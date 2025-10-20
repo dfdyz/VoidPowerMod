@@ -1,28 +1,22 @@
 package com.dfdyz.void_power.compat.cct.lua;
 
 
-import com.dfdyz.void_power.utils.CCUtils;
-import com.dfdyz.void_power.utils.VSUtils;
-import com.dfdyz.void_power.world.blocks.engine_controller.EngineControllerBlock;
+/*import com.dfdyz.void_power.utils.CCUtils;
 import com.dfdyz.void_power.world.blocks.engine_controller.EngineControllerTE;
-import com.dfdyz.void_power.world.blocks.hologram.HologramTE;
 import dan200.computercraft.api.lua.LuaFunction;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import org.joml.*;
-import org.valkyrienskies.core.impl.game.ships.PhysInertia;
 import org.valkyrienskies.core.impl.game.ships.PhysShipImpl;
-import org.valkyrienskies.physics_api.PoseVel;
 
 import java.lang.Math;
 import java.util.List;
-import java.util.Map;
+import java.util.Map;*/
 
 
 public class LuaPhysShip {
 
-    private final PhysShipImpl physShip;
+  /*  private final PhysShipImpl physShip;
     private final ShipPhysStateSnapshot shipSnapshot;
     //private final Quaternionf rot;
     //private final double[][] ctrl_rotation;
@@ -88,11 +82,11 @@ public class LuaPhysShip {
 
     public static ShipPhysStateSnapshot createSnapshot(PhysShipImpl ship, EngineControllerTE te){
 
-        PoseVel poseVel = ship.getPoseVel();
-        PhysInertia inertia = ship.getInertia();
+        var transform = ship.getTransform();
+        var inertia = ship.get_inertia();
 
         double[][] ctrl_rotation;
-        Matrix3d rm = poseVel.getRot().get(new Matrix3d());
+        Matrix3d rm = transform.getShipToWorldRotation().get(new Matrix3d());
 
         Direction face = te.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
         if(face.equals(Direction.NORTH)){
@@ -124,11 +118,13 @@ public class LuaPhysShip {
             };
         }
 
+        var pv = ship.getPoseVel();
+
         return new ShipPhysStateSnapshot(
-                new Vector3d(poseVel.getVel()),
-                new Vector3d(poseVel.getOmega()),
-                new Vector3d(poseVel.getPos()),
-                new Quaterniond(poseVel.getRot()),
+                new Vector3d(pv.getVel()),
+                new Vector3d(pv.getOmega()),
+                new Vector3d(transform.getPositionInWorld()),
+                new Quaterniond(transform.getShipToWorldRotation()),
                 ctrl_rotation,
                 new Matrix3d(inertia.getMomentOfInertiaTensor()),
                 inertia.getShipMass()
@@ -148,5 +144,5 @@ public class LuaPhysShip {
     @LuaFunction
     public final boolean doFluidDrag() {
         return this.physShip.getDoFluidDrag();
-    }
+    }*/
 }

@@ -8,7 +8,7 @@ import dan200.computercraft.shared.computer.core.ServerContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
 import org.joml.*;
-import org.valkyrienskies.core.api.ships.properties.ShipInertiaData;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;

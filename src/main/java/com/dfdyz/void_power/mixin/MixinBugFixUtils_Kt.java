@@ -1,5 +1,6 @@
 package com.dfdyz.void_power.mixin;
 
+/*
 import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -9,6 +10,7 @@ import org.valkyrienskies.mod.util.BugFixUtil;
 
 import java.util.Arrays;
 import java.util.Map;
+*/
 
 //@Mixin(value = BugFixUtil.class, remap = false)
 public abstract class MixinBugFixUtils_Kt {

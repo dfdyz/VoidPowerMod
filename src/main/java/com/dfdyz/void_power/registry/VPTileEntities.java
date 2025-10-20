@@ -28,28 +28,28 @@ import static com.dfdyz.void_power.VoidPowerMod.REGISTRATE;
 public class VPTileEntities {
 
 
-    public static final BlockEntityEntry<VoidEngineTE> VOID_ENGINE_TE = REGISTRATE
+  /*  public static final BlockEntityEntry<VoidEngineTE> VOID_ENGINE_TE = REGISTRATE
             .blockEntity(VoidEngineBlock.ID, VoidEngineTE::new)
-            .instance(() -> VoidEngineTEInstance::new, false)
+            .visual(() -> VoidEngineTEInstance::new, false)
             .validBlock(VPBlocks.VOID_ENGINE)
             .renderer(() -> VoidEngineTERenderer::new)
-            .register();
+            .register();*/
 
-    public static final BlockEntityEntry<EngineControllerTE> ENGINE_CONTROLLER_TE = REGISTRATE
+    /*public static final BlockEntityEntry<EngineControllerTE> ENGINE_CONTROLLER_TE = REGISTRATE
             .blockEntity(EngineControllerBlock.ID, EngineControllerTE::new)
             .validBlock(VPBlocks.ENGINE_CONTROLLER_BLOCK)
-            .register();
+            .register();*/
 
     public static final BlockEntityEntry<GlassScreenTE> GLASS_SCREEN_TE = REGISTRATE
             .blockEntity(GlassScreenBlock.ID, GlassScreenTE::new)
-            .instance(() -> GlassScreenInstance::new, true)
+            .visual(() -> GlassScreenInstance::new, true)
             .validBlock(VPBlocks.GLASS_SCREEN_BLOCK)
             .renderer(() -> ScreenRenderer::new)
             .register();
 
     public static final BlockEntityEntry<HologramTE> HOLOGRAM_TE = REGISTRATE
             .blockEntity(HologramBlock.ID, HologramTE::new)
-            .instance(() -> HologramInstance::new, true)
+            .visual(() -> HologramInstance::new, true)
             .validBlock(VPBlocks.HOLOGRAM_BLOCK)
             .renderer(() -> HologramRenderer::new)
             .register();

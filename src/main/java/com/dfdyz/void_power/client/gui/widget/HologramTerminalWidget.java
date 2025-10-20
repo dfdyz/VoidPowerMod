@@ -88,11 +88,9 @@ public class HologramTerminalWidget extends AbstractWidget {
     }
 
     private void paste() {
-        String clipboard = StringUtil.normaliseClipboardString(Minecraft.getInstance().keyboardHandler.getClipboard());
+        String clipboard = String.valueOf(StringUtil.getClipboardString(Minecraft.getInstance().keyboardHandler.getClipboard()));
         te.SendInputPack("vp_paste", te.name, clipboard);
-
     }
-
 
     @Override
     public void setFocused(boolean focused) {
