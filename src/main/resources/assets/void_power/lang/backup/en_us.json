@@ -9,5 +9,8 @@
 
   "itemGroup.void_power.main": "Void Power",
 
-  "key_bind.vr_glasses": "Toggle VR Glasses"
+  "key_bind.vr_glasses": "Toggle VR Glasses",
+
+  "gui.void_power.key_board.actived": "&3[Using Keyboard]"
+
 }

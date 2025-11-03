@@ -22,7 +22,6 @@ import java.util.function.Supplier;
 public class VPRenderTypes {
 
     public static final ResourceLocation FONT = new ResourceLocation(VoidPowerMod.MODID, "textures/block/term_font.png");
-
     public static final ResourceLocation FONT_NEG = new ResourceLocation(VoidPowerMod.MODID, "textures/block/term_font_neg.png");
 
     //public static final ResourceLocation FONT = new ResourceLocation(VoidPowerMod.MODID, "textures/block/term_font.png");
@@ -32,6 +31,8 @@ public class VPRenderTypes {
 
 
     private static RenderType getText(ResourceLocation locationIn) {
+
+        /*
         RenderType.CompositeState rendertype$state = RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(VPRenderTypes::text))
                 .setTextureState(new CustomizableTextureState(locationIn, () -> ForgeRenderTypes.enableTextTextureLinearFiltering, () -> false))
@@ -40,6 +41,8 @@ public class VPRenderTypes {
                 //.setOverlayState(RenderType.OV)
                 .createCompositeState(false);
         return RenderType.create("cct_text", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, true, rendertype$state);
+         */
+        return RenderType.text(locationIn);
     }
 
     public static RenderType getHologram(ResourceLocation locationIn) {

@@ -9,6 +9,7 @@
     "INetTermWrapper",
     "MixinComputerRegistry",
     "MixinComputerThread",
+    "MixinMonitorRenderState",
     "MixinNetworkTerminal",
     "MixinPeripheralProxyTE_Kt",
     "MixinTerminal",
@@ -17,7 +18,8 @@
   ],
   "client": [
     "MixinCCMonitorRender",
-    "MixinMonitorHighlightRenderer"
+    "MixinMonitorHighlightRenderer",
+    "MixinMouseHandler"
   ],
   "package": "com.dfdyz.void_power.mixin",
   "plugin": "com.dfdyz.void_power.mixin.MixinPlugin",

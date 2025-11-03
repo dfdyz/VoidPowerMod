@@ -129,6 +129,7 @@ repositories {
 
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
+    mavenCentral()
     flatDir {
         dir 'libs'
     }
@@ -160,8 +161,6 @@ repositories {
     maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
     maven { url = "https://maven.ithundxr.dev/mirror" } // Registrate
     maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
-
-    mavenCentral()
 }
 
 
@@ -207,6 +206,8 @@ dependencies {
 
     // cc:t dependencies
     implementation fg.deobf("libs:cc-tweaked-1.20.1-forge:${cc_version}")
+    runtimeOnly fg.deobf("libs:jei-1.20.1-forge:15.20.0.116")
+
 
     //
     implementation fg.deobf("libs:peripheralium-forge:1.20.1-0.6.15")

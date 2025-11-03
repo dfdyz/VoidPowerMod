@@ -9,7 +9,7 @@ uniform float FogStart;
 uniform float FogEnd;
 uniform vec4 FogColor;
 
-in float vertexDistance;
+//in float vertexDistance;
 in vec4 vertexColor;
 in vec2 texCoord0;
 
@@ -20,5 +20,5 @@ void main() {
     if (color.a < 0.1) {
         discard;
     }
-    fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
+    fragColor = linear_fog(color, 1, FogStart, FogEnd, FogColor);
 }

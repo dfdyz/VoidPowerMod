@@ -3,6 +3,7 @@ package com.dfdyz.void_power.registry;
 import com.dfdyz.void_power.world.blocks.engine_controller.EngineControllerBlock;
 import com.dfdyz.void_power.world.blocks.glass_screen.GlassScreenBlock;
 import com.dfdyz.void_power.world.blocks.hologram.HologramBlock;
+import com.dfdyz.void_power.world.blocks.key_board.KeyBoardBlock;
 import com.dfdyz.void_power.world.blocks.void_engine.VoidEngineBlock;
 import com.google.common.collect.Maps;
 import com.simibubi.create.AllShapes;
@@ -26,7 +27,8 @@ public class VPShapes {
             //ENGINE_CONTROLLER = new AllShapes.Builder(EngineControllerBlock.Shape()).forHorizontal(Direction.NORTH),
             HOLOGRAM = new AllShapes.Builder(HologramBlock.Shape()).forHorizontal(Direction.NORTH),
             //FULL_BLOCK = new AllShapes.Builder(HologramBlock.Shape()).forHorizontal(Direction.NORTH),
-            GLASS_SCREEN_O = new AllShapes.Builder(GlassScreenBlock.ShapeO()).forHorizontal(Direction.NORTH)
+            GLASS_SCREEN_O = new AllShapes.Builder(GlassScreenBlock.ShapeO()).forHorizontal(Direction.NORTH),
+            KEYBOARD = new AllShapes.Builder(KeyBoardBlock.Shape()).forHorizontal(Direction.NORTH)
     ;
 
     public static class ScreenShaper{

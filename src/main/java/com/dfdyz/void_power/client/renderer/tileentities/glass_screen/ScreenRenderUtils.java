@@ -167,7 +167,6 @@ public class ScreenRenderUtils {
             int colour = terminal.getPalette().getRenderColours(15 - terminal.getTextColour());
             drawChar(emitter, x + (float) (terminal.getCursorX() * 6), y + (float) (terminal.getCursorY() * 9), 95, colour);
         }
-
     }
 
     public static int getVertexCount(Terminal terminal) {

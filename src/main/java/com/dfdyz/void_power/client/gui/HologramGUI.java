@@ -1,7 +1,6 @@
 package com.dfdyz.void_power.client.gui;
 
 import com.dfdyz.void_power.client.gui.widget.HologramTerminalWidget;
-import com.dfdyz.void_power.menu.HologramMenu;
 import com.dfdyz.void_power.network.CP.CP_HologramRename;
 import com.dfdyz.void_power.network.PacketManager;
 import com.dfdyz.void_power.world.blocks.hologram.HologramTE;
@@ -15,22 +14,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
-public class HologramGUI extends Screen implements MenuAccess<HologramMenu> {
-    HologramTE te;
+public class HologramGUI extends Screen {
+    final HologramTE te;
     HologramTerminalWidget htw;
 
     EditBox name_editor;
     Button set_name;
 
     float terminal_scale = 1;
-    final HologramMenu menu;
 
-    public HologramGUI(HologramMenu menu, Inventory inventory, Component component) {
+    public HologramGUI(Component component, HologramTE te) {
         super(component);
-        this.menu = menu;
-        if(menu != null){
-            te = menu.te;
-        }
+        this.te = te;
     }
 
     float GetScale(){
@@ -88,10 +83,15 @@ public class HologramGUI extends Screen implements MenuAccess<HologramMenu> {
     }
 
     @Override
+    public void onClose() {
+        super.onClose();
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if(te == null || te.isRemoved()) {
-            Minecraft.getInstance().setScreen(null);
+            onClose();
             return;
         }
         if(htw.ShouldResize()){
@@ -121,8 +121,4 @@ public class HologramGUI extends Screen implements MenuAccess<HologramMenu> {
         super.setInitialFocus(guiEventListener);
     }
 
-    @Override
-    public @NotNull HologramMenu getMenu() {
-        return menu;
-    }
 }

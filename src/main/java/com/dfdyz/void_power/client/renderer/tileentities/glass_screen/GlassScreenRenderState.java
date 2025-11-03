@@ -14,19 +14,16 @@ import org.lwjgl.opengl.GL31;
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 public class GlassScreenRenderState implements ClientMonitor.RenderState{
-
     @GuardedBy("allMonitors")
     private static final Set<GlassScreenRenderState> allMonitors = new HashSet();
 
     public long lastRenderFrame = -1L;
     @Nullable
     public BlockPos lastRenderPos = null;
-    public int tboBuffer;
-    public int tboTexture;
-    public int tboUniform;
     @Nullable
     public DirectVertexBuffer backgroundBuffer;
     @Nullable
@@ -38,56 +35,23 @@ public class GlassScreenRenderState implements ClientMonitor.RenderState{
     }
 
     public boolean createBuffer(MonitorRenderer renderer) {
-        switch (renderer) {
-            case TBO:
-                if (this.tboBuffer != 0) {
-                    return false;
-                }
-
-                this.deleteBuffers();
-                this.tboBuffer = DirectBuffers.createBuffer();
-                DirectBuffers.setEmptyBufferData(35882, this.tboBuffer, 35044);
-                this.tboTexture = GlStateManager._genTexture();
-                GL11.glBindTexture(35882, this.tboTexture);
-                GL31.glTexBuffer(35882, 33330, this.tboBuffer);
-                GL11.glBindTexture(35882, 0);
-                this.tboUniform = DirectBuffers.createBuffer();
-                DirectBuffers.setEmptyBufferData(35345, this.tboUniform, 35044);
-                this.addMonitor();
-                return true;
-            case VBO:
-                if (this.backgroundBuffer != null) {
-                    return false;
-                }
-
-                this.deleteBuffers();
-                this.backgroundBuffer = new DirectVertexBuffer();
-                this.foregroundBuffer = new DirectVertexBuffer();
-                this.foregroundNegBuffer = new DirectVertexBuffer();
-                this.addMonitor();
-                return true;
-            default:
+        if (Objects.requireNonNull(renderer) == MonitorRenderer.VBO) {
+            if (this.backgroundBuffer != null) {
                 return false;
+            }
+
+            this.deleteBuffers();
+            this.backgroundBuffer = new DirectVertexBuffer();
+            this.foregroundBuffer = new DirectVertexBuffer();
+            this.foregroundNegBuffer = new DirectVertexBuffer();
+            this.addMonitor();
+            return true;
         }
+        return false;
     }
 
 
     private void deleteBuffers() {
-        if (this.tboBuffer != 0) {
-            DirectBuffers.deleteBuffer(35882, this.tboBuffer);
-            this.tboBuffer = 0;
-        }
-
-        if (this.tboTexture != 0) {
-            GlStateManager._deleteTexture(this.tboTexture);
-            this.tboTexture = 0;
-        }
-
-        if (this.tboUniform != 0) {
-            DirectBuffers.deleteBuffer(35345, this.tboUniform);
-            this.tboUniform = 0;
-        }
-
         if (this.backgroundBuffer != null) {
             this.backgroundBuffer.close();
             this.backgroundBuffer = null;
@@ -112,14 +76,13 @@ public class GlassScreenRenderState implements ClientMonitor.RenderState{
 
     @Override
     public void close() {
-        if (this.tboBuffer != 0 || this.backgroundBuffer != null) {
+        if (this.backgroundBuffer != null) {
             synchronized(allMonitors) {
                 allMonitors.remove(this);
             }
 
             this.deleteBuffers();
         }
-
     }
 
     public static void destroyAll() {

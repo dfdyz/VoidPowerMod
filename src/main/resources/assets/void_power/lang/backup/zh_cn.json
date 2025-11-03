@@ -6,5 +6,8 @@
   "item.void_power.vr_glasses": "VR眼镜(需绑定全息显示器)",
   "item.void_power.channel_modifier": "信道修改器",
   "itemGroup.void_power.main": "虚空动力",
-  "key_bind.vr_glasses": "开关VR研究"
+  "key_bind.vr_glasses": "开关VR眼镜",
+
+  "gui.void_power.key_board.actived": "&3[正在使用键盘]"
+
 }

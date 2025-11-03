@@ -1,26 +1,20 @@
 package com.dfdyz.void_power.client.gui;
 
 import com.dfdyz.void_power.menu.ChannelModifierMenu;
-import com.dfdyz.void_power.menu.HologramMenu;
 import com.dfdyz.void_power.registry.VPItems;
-import com.dfdyz.void_power.registry.VPTileEntities;
 import com.dfdyz.void_power.utils.ParamUtils;
 import com.dfdyz.void_power.world.items.ChannelModifierItem;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ChannelModifierGUI extends Screen implements MenuAccess<ChannelModifierMenu> {
@@ -36,6 +30,10 @@ public class ChannelModifierGUI extends Screen implements MenuAccess<ChannelModi
 
     Pattern channel_pattern = Pattern.compile("^[a-z][a-z0-9_]*:[a-z][a-z0-9_/]*+$");
 
+    @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
 
     @Override
     protected void init() {

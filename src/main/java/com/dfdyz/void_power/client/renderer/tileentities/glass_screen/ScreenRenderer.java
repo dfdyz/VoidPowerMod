@@ -50,7 +50,8 @@ public class ScreenRenderer extends SafeBlockEntityRenderer<GlassScreenTE> {
     }
 
     @Override
-    protected void renderSafe(GlassScreenTE monitor, float partialTicks, PoseStack transform, MultiBufferSource bufferSource, int light, int overlay) {
+    protected void renderSafe(GlassScreenTE monitor, float partialTicks, PoseStack transform, MultiBufferSource bufferSource,
+                              int light, int overlay) {
         var originTerminal = monitor.getOriginClientMonitor();
         var originTE = ((IMonitorTEAccessor) monitor).Invoke_getOrigin();
         if (originTerminal == null || originTE == null) return;
@@ -144,9 +145,10 @@ public class ScreenRenderer extends SafeBlockEntityRenderer<GlassScreenTE> {
         if (te != null && te.pollChange()) redraw = true;
         if (renderState.createBuffer(MonitorRenderer.VBO)) redraw = true;
 
-        var backgroundBuffer = renderState.backgroundBuffer;
-        var foregroundBuffer = renderState.foregroundBuffer;
-        var foregroundNegBuffer = renderState.foregroundNegBuffer;
+        var backgroundBuffer = assertNonNull(renderState.backgroundBuffer);
+        var foregroundBuffer = assertNonNull(renderState.foregroundBuffer);
+        var foregroundNegBuffer = assertNonNull(renderState.foregroundNegBuffer);
+
         if (redraw) {
             var size = ScreenRenderUtils.getVertexCount(terminal);
 
@@ -157,32 +159,29 @@ public class ScreenRenderer extends SafeBlockEntityRenderer<GlassScreenTE> {
             //System.out.println("enableTransparent: " + enableTransparent);
             // m = peripheral.wrap("left")
 
-            renderToBuffer(backgroundBuffer, size, sink ->
-                    ScreenRenderUtils.drawTerminalBackground(sink, 0, 0, terminal, yMargin, yMargin, xMargin, xMargin, enableTransparent ? noBG_color : 'z'));
-
-            //
-            renderToBuffer(foregroundBuffer, size, sink -> {
-                ScreenRenderUtils.drawTerminalForeground(sink, 0, 0, terminal, enableTransparent ? noBG_color : 'z');
-                // If the cursor is visible, we append it to the end of our buffer. When rendering, we can either
-                // render n or n+1 quads and so toggle the cursor on and off.
-                ScreenRenderUtils.drawCursor(sink, 0, 0, terminal);
+            renderToBuffer(backgroundBuffer, size, sink -> {
+                ScreenRenderUtils.drawTerminalBackground(sink, 0, 0, terminal, yMargin, yMargin, xMargin, xMargin,
+                        enableTransparent ? noBG_color : 'z');
             });
 
-
             renderToBuffer(foregroundNegBuffer, size, sink -> {
-                ScreenRenderUtils.drawTerminalForegroundNeg(sink, 0, 0, terminal, enableTransparent ? noBG_color : 'z');
+                ScreenRenderUtils.drawTerminalForegroundNeg(sink, 0, 0, terminal,
+                        enableTransparent ? noBG_color : 'z');
+            });
+
+            renderToBuffer(foregroundBuffer, size, sink -> {
+                ScreenRenderUtils.drawTerminalForeground(sink, 0, 0, terminal,
+                        enableTransparent ? noBG_color : 'z');
+                ScreenRenderUtils.drawCursor(sink, 0, 0, terminal);
             });
         }
 
-        // Our VBO doesn't transform its vertices with the provided pose stack, which means that the inverse view
-        // rotation matrix gives entirely wrong numbers for fog distances. We just set it to the identity which
-        // gives a good enough approximation.
         var oldInverseRotation = RenderSystem.getInverseViewRotationMatrix();
         RenderSystem.setInverseViewRotationMatrix(IDENTITY_NORMAL);
         RenderSystem.disableCull();
 
         VPRenderTypes.TERMINAL.setupRenderState();
-        // Render background geometry
+
         backgroundBuffer.bind();
         backgroundBuffer.drawWithShader(matrix, RenderSystem.getProjectionMatrix(), VPRenderTypes.text());
 
@@ -195,8 +194,9 @@ public class ScreenRenderer extends SafeBlockEntityRenderer<GlassScreenTE> {
                 matrix, RenderSystem.getProjectionMatrix(), VPRenderTypes.text(),
                 // As mentioned in the above comment, render the extra cursor quad if it is visible this frame. Each
                 // // quad has an index count of 6.
-                FixedWidthFontRenderer.isCursorVisible(terminal) && FrameInfo.getGlobalCursorBlink()
-                        ? foregroundBuffer.getIndexCount() + 6 : foregroundBuffer.getIndexCount()
+                FixedWidthFontRenderer.isCursorVisible(terminal) && !FrameInfo.getGlobalCursorBlink()
+                        ? foregroundBuffer.getIndexCount() - RenderTypes.TERMINAL.mode().indexCount(4)
+                        : foregroundBuffer.getIndexCount()
         );
         RenderTypes.TERMINAL.clearRenderState();
 
@@ -204,18 +204,18 @@ public class ScreenRenderer extends SafeBlockEntityRenderer<GlassScreenTE> {
         VPRenderTypes.TERMINAL_NEG.setupRenderState();
         foregroundNegBuffer.bind();
         foregroundNegBuffer.drawWithShader(
-                matrix, RenderSystem.getProjectionMatrix(), VPRenderTypes.text(),
-                // As mentioned in the above comment, render the extra cursor quad if it is visible this frame. Each
-                // // quad has an index count of 6.
+                matrix, RenderSystem.getProjectionMatrix(), VPRenderTypes.text()/*,
                 FixedWidthFontRenderer.isCursorVisible(terminal) && FrameInfo.getGlobalCursorBlink()
-                        ? foregroundNegBuffer.getIndexCount() + 6 : foregroundNegBuffer.getIndexCount()
+                        ? foregroundNegBuffer.getIndexCount() + 6 : foregroundNegBuffer.getIndexCount()*/
         );
 
         // Clear state
         RenderSystem.polygonOffset(0.0f, -0.0f);
         RenderSystem.disablePolygonOffset();
+
         VPRenderTypes.TERMINAL_NEG.clearRenderState();
         VertexBuffer.unbind();
+
         RenderSystem.enableCull();
         RenderSystem.setInverseViewRotationMatrix(oldInverseRotation);
     }
