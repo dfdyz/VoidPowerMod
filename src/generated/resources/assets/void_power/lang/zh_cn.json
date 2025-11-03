@@ -7,6 +7,7 @@
   "block.void_power.redstone_broadcaster":"无线红石信号发射器",
   "block.void_power.redstone_router":"无线红石信号路由器",
   "item.void_power.vr_glasses": "VR眼镜(需绑定全息显示器)",
+  "block.void_power.key_board": "键盘",
   "item.void_power.channel_modifier": "信道修改器",
   "itemGroup.void_power.main": "虚空动力",
   "gui.void_power.terminal" : "全息显示器(终端)",

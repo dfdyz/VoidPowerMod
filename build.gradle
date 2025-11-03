@@ -208,6 +208,7 @@ dependencies {
     implementation fg.deobf("libs:cc-tweaked-1.20.1-forge:${cc_version}")
     runtimeOnly fg.deobf("libs:jei-1.20.1-forge:15.20.0.116")
 
+    runtimeOnly fg.deobf("libs:IconRenderer-Forge-1.20.1:1.2.0")
 
     //
     implementation fg.deobf("libs:peripheralium-forge:1.20.1-0.6.15")

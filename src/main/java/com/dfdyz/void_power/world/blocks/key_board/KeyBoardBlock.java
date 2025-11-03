@@ -80,7 +80,7 @@ public class KeyBoardBlock extends HorizontalDirectionalBlock implements IBE<Key
                 return InteractionResult.SUCCESS;
             }
         }
-        return InteractionResult.PASS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
