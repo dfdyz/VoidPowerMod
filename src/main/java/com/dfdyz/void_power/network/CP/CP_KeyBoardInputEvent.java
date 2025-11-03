@@ -1,0 +1,127 @@
+package com.dfdyz.void_power.network.CP;
+
+
+import com.dfdyz.void_power.world.blocks.hologram.HologramTE;
+import com.dfdyz.void_power.world.blocks.key_board.KeyBoardTE;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
+
+import static com.dfdyz.void_power.utils.ByteUtils.decodeString;
+import static com.dfdyz.void_power.utils.ByteUtils.encodeString;
+
+public class CP_KeyBoardInputEvent {
+    public BlockPos te;
+    public String name;
+    public Object[] param;
+
+    public CP_KeyBoardInputEvent(){
+
+    }
+
+    public CP_KeyBoardInputEvent(KeyBoardTE te, String event, Object... param){
+        this.te = te.getBlockPos();
+        this.name = event;
+        this.param = param;
+    }
+
+    public static CP_KeyBoardInputEvent decode(FriendlyByteBuf buf) {
+        //System.out.println("Received_DEC");
+        CP_KeyBoardInputEvent data = new CP_KeyBoardInputEvent();
+        data.te = buf.readBlockPos();
+
+        data.name = decodeString(buf);
+        data.param = new Object[buf.readShort()];
+
+        Object obj;
+        char type;
+        for(int i = 0; i < data.param.length; ++i){
+            type = buf.readChar();
+            if(type == 'i'){
+                obj = buf.readInt();
+            }
+            else if(type == 'd'){
+                obj = buf.readDouble();
+            }
+            else if(type == 'f'){
+                obj = buf.readFloat();
+            }
+            else if(type == 's'){
+                obj = decodeString(buf);
+            }
+            else if(type == 'b'){
+                obj = buf.readBoolean();
+            }
+            else if(type == 'c'){
+                obj = ""+buf.readChar();
+            }
+            else{
+                obj = null;
+            }
+
+            data.param[i] = obj;
+        }
+
+        //System.out.println("ClientMsg");
+
+        /*
+        for (int i = 0; i < data.param.length; i++) {
+            System.out.println(data.param[i]);
+        }*/
+
+        return data;
+    }
+
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeBlockPos(te);
+
+        encodeString(buf, name);
+        buf.writeShort(param.length);
+
+        Object obj;
+        for (int i = 0; i < param.length; i++) {
+            obj = param[i];
+            if(obj instanceof Integer _int){
+                buf.writeChar('i');
+                buf.writeInt(_int);
+            }
+            else if(obj instanceof Double _double){
+                buf.writeChar('d');
+                buf.writeDouble(_double);
+            }
+            else if(obj instanceof Float _float){
+                buf.writeChar('f');
+                buf.writeDouble(_float);
+            }
+            else if(obj instanceof String str){
+                buf.writeChar('s');
+                encodeString(buf, str);
+            }
+            else if(obj instanceof Boolean bool){
+                buf.writeChar('b');
+                buf.writeBoolean(bool);
+            }
+            else if(obj instanceof Character ch){
+                buf.writeChar('c');
+                buf.writeChar(ch);
+            }
+            else {
+                throw new RuntimeException("Unsupport type: " + obj.getClass());
+            }
+        }
+    }
+
+    public static void handler(CP_KeyBoardInputEvent msg, Supplier<NetworkEvent.Context> context){
+        NetworkEvent.Context ctx = context.get();
+        ctx.setPacketHandled(true);
+        ctx.enqueueWork(() -> {
+            BlockEntity be = context.get().getSender().level().getExistingBlockEntity(msg.te);
+            if(be instanceof KeyBoardTE te){
+                te.PushEvent(msg.name, msg.param);
+            }
+        });
+    }
+}

@@ -2,10 +2,10 @@ package com.dfdyz.void_power.world.blocks.glass_screen;
 
 import com.dfdyz.void_power.registry.VPShapes;
 import com.dfdyz.void_power.registry.VPTileEntities;
-import com.simibubi.create.foundation.utility.VoxelShaper;
 import dan200.computercraft.shared.ModRegistry;
 import dan200.computercraft.shared.peripheral.monitor.MonitorBlock;
 import dan200.computercraft.shared.peripheral.monitor.MonitorEdgeState;
+import net.createmod.catnip.math.VoxelShaper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;

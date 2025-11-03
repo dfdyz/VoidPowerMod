@@ -3,6 +3,7 @@ package com.dfdyz.void_power.registry;
 import com.dfdyz.void_power.world.blocks.engine_controller.EngineControllerBlock;
 import com.dfdyz.void_power.world.blocks.glass_screen.GlassScreenBlock;
 import com.dfdyz.void_power.world.blocks.hologram.HologramBlock;
+import com.dfdyz.void_power.world.blocks.key_board.KeyBoardBlock;
 import com.dfdyz.void_power.world.blocks.redstone_link.RSBroadcasterBlock;
 import com.dfdyz.void_power.world.blocks.redstone_link.RSReceiverBlock;
 import com.dfdyz.void_power.world.blocks.redstone_link.RSRouterBlock;
@@ -23,7 +24,7 @@ public class VPBlocks {
         REGISTRATE.setCreativeTab(VPCreativeTabs.TAB);
     }
 
-    public static final BlockEntry<VoidEngineBlock> VOID_ENGINE = REGISTRATE.block(VoidEngineBlock.ID, VoidEngineBlock::new)
+ /*   public static final BlockEntry<VoidEngineBlock> VOID_ENGINE = REGISTRATE.block(VoidEngineBlock.ID, VoidEngineBlock::new)
             .initialProperties(SharedProperties::stone)
             .transform(TagGen.axeOrPickaxe())
             .blockstate(BlockStateGen.horizontalBlockProvider(true))
@@ -31,11 +32,11 @@ public class VPBlocks {
             //.transform(BlockStressDefaults.setImpact(8.0))
             .item()
             .transform(customItemModel())
-            .register();
+            .register();*/
 
     //Blocks.GLASS
 
-    public static final BlockEntry<EngineControllerBlock> ENGINE_CONTROLLER_BLOCK = REGISTRATE.block(EngineControllerBlock.ID, EngineControllerBlock::new)
+   /* public static final BlockEntry<EngineControllerBlock> ENGINE_CONTROLLER_BLOCK = REGISTRATE.block(EngineControllerBlock.ID, EngineControllerBlock::new)
             .initialProperties(SharedProperties::stone)
             .transform(TagGen.axeOrPickaxe())
             .blockstate(BlockStateGen.horizontalBlockProvider(true))
@@ -44,7 +45,17 @@ public class VPBlocks {
             .item()
             .transform(customItemModel())
             .register();
-
+*/
+   public static final BlockEntry<KeyBoardBlock> KEYBOARD_BLOCK = REGISTRATE.block(
+           KeyBoardBlock.ID, KeyBoardBlock::new)
+           .initialProperties(SharedProperties::stone)
+           .transform(TagGen.axeOrPickaxe())
+           .blockstate(BlockStateGen.horizontalBlockProvider(true))
+           //.addLayer(() -> RenderType::translucent)
+           //.transform(BlockStressDefaults.setImpact(8.0))
+           .item()
+           .transform(customItemModel())
+           .register();
 
     public static final BlockEntry<GlassScreenBlock> GLASS_SCREEN_BLOCK = REGISTRATE.block(GlassScreenBlock.ID, GlassScreenBlock::new)
             .initialProperties(SharedProperties::stone)

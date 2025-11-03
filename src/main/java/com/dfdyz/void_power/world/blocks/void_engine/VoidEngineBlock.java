@@ -9,14 +9,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.energy.IEnergyStorage;
 
 public class VoidEngineBlock extends HorizontalKineticBlock implements IBE<VoidEngineTE> {
 
@@ -39,7 +37,8 @@ public class VoidEngineBlock extends HorizontalKineticBlock implements IBE<VoidE
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockReader, BlockPos pos, CollisionContext context) {
-        return VPShapes.VOID_ENGINE.get(state.getValue(HORIZONTAL_FACING));
+        //return VPShapes.VOID_ENGINE.get(state.getValue(HORIZONTAL_FACING));
+        return null;
     }
 
     @Override
@@ -68,7 +67,8 @@ public class VoidEngineBlock extends HorizontalKineticBlock implements IBE<VoidE
 
     @Override
     public BlockEntityType<? extends VoidEngineTE> getBlockEntityType() {
-        return VPTileEntities.VOID_ENGINE_TE.get();
+        //return VPTileEntities.VOID_ENGINE_TE.get();
+        return null;
     }
 
 

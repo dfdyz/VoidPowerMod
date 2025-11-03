@@ -3,11 +3,13 @@ package com.dfdyz.void_power.registry;
 import com.dfdyz.void_power.world.blocks.engine_controller.EngineControllerBlock;
 import com.dfdyz.void_power.world.blocks.glass_screen.GlassScreenBlock;
 import com.dfdyz.void_power.world.blocks.hologram.HologramBlock;
+import com.dfdyz.void_power.world.blocks.key_board.KeyBoardBlock;
 import com.dfdyz.void_power.world.blocks.void_engine.VoidEngineBlock;
 import com.google.common.collect.Maps;
 import com.simibubi.create.AllShapes;
-import com.simibubi.create.foundation.utility.VoxelShaper;
+
 import dan200.computercraft.shared.peripheral.monitor.MonitorEdgeState;
+import net.createmod.catnip.math.VoxelShaper;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -21,11 +23,12 @@ public class VPShapes {
 
 
     public static final VoxelShaper
-            VOID_ENGINE = new AllShapes.Builder(VoidEngineBlock.Shape()).forHorizontal(Direction.NORTH),
-            ENGINE_CONTROLLER = new AllShapes.Builder(EngineControllerBlock.Shape()).forHorizontal(Direction.NORTH),
+            //VOID_ENGINE = new AllShapes.Builder(VoidEngineBlock.Shape()).forHorizontal(Direction.NORTH),
+            //ENGINE_CONTROLLER = new AllShapes.Builder(EngineControllerBlock.Shape()).forHorizontal(Direction.NORTH),
             HOLOGRAM = new AllShapes.Builder(HologramBlock.Shape()).forHorizontal(Direction.NORTH),
             //FULL_BLOCK = new AllShapes.Builder(HologramBlock.Shape()).forHorizontal(Direction.NORTH),
-            GLASS_SCREEN_O = new AllShapes.Builder(GlassScreenBlock.ShapeO()).forHorizontal(Direction.NORTH)
+            GLASS_SCREEN_O = new AllShapes.Builder(GlassScreenBlock.ShapeO()).forHorizontal(Direction.NORTH),
+            KEYBOARD = new AllShapes.Builder(KeyBoardBlock.Shape()).forHorizontal(Direction.NORTH)
     ;
 
     public static class ScreenShaper{

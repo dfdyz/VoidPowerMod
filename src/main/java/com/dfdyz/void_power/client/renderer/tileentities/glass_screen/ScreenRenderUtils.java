@@ -112,13 +112,13 @@ public class ScreenRenderUtils {
     }
 
     private static void drawBackground(DirectFixedWidthFontRenderer.QuadEmitter emitter, float x, float y, TextBuffer backgroundColour, TextBuffer foregroundColor, Palette palette, float leftMarginSize, float rightMarginSize, float height, char noBG_colourIdx) {
-        if (leftMarginSize > 0.0F) {
+       /* if (leftMarginSize > 0.0F) {
             drawQuad(emitter, x - leftMarginSize, y, leftMarginSize, height, palette, backgroundColour.charAt(0), noBG_colourIdx);
         }
 
         if (rightMarginSize > 0.0F) {
             drawQuad(emitter, x + (float)(backgroundColour.length() * 6), y, rightMarginSize, height, palette, backgroundColour.charAt(backgroundColour.length() - 1), noBG_colourIdx);
-        }
+        }*/
 
         int blockStart = 0;
         char blockColour = 0;
@@ -167,7 +167,6 @@ public class ScreenRenderUtils {
             int colour = terminal.getPalette().getRenderColours(15 - terminal.getTextColour());
             drawChar(emitter, x + (float) (terminal.getCursorX() * 6), y + (float) (terminal.getCursorY() * 9), 95, colour);
         }
-
     }
 
     public static int getVertexCount(Terminal terminal) {
@@ -178,7 +177,7 @@ public class ScreenRenderUtils {
         buffer.quad(x1, y1, x2, y2, z, rgba, u1, v1, u2, v2);
     }
 
-
+    /*
     static void quad(ByteBuffer buffer, float x1, float y1, float x2, float y2, float z, byte[] rgba, float u1, float v1, float u2, float v2) {
         int position = buffer.position();
         long addr = MemoryUtil.memAddress(buffer);
@@ -237,7 +236,7 @@ public class ScreenRenderUtils {
         } else {
             throw new IndexOutOfBoundsException();
         }
-    }
+    }*/
 
     // Empty Terminal
     private static void quad(FixedWidthFontRenderer.QuadEmitter c, float x1, float y1, float x2, float y2, float z, byte[] rgba, float u1, float v1, float u2, float v2, int light) {

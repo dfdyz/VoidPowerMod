@@ -1,0 +1,35 @@
+{
+  "type": "create:mechanical_crafting",
+  "acceptMirrored": false,
+  "key": {
+    "R": {
+      "item": "create:rotation_speed_controller"
+    },
+    "S": {
+      "item": "create:sequenced_gearshift"
+    },
+    "F": {
+      "item": "create:flywheel"
+    },
+    "C": {
+      "item": "create:andesite_casing"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
+    }
+  },
+  "pattern": [
+    "CCCCC",
+    "CPEEC",
+    "SRFFC",
+    "CPEEC",
+    "CCCCC"
+  ],
+  "result": {
+    "count": 1,
+    "item": "void_power:void_engine"
+  }
+}

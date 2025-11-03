@@ -21,7 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
-import org.valkyrienskies.mod.common.VSGameUtilsKt;
+/*import org.valkyrienskies.mod.common.VSGameUtilsKt;*/
 
 public class VRGlassesHUDRenderer {
 
@@ -130,15 +130,17 @@ public class VRGlassesHUDRenderer {
 
         BlockEntity te = player.level().getBlockEntity(bp);
         if(te instanceof HologramTE hte){
-            if(VSGameUtilsKt.squaredDistanceToInclShips(player, bp.getX(), bp.getY(), bp.getZ()) > distance_limit * distance_limit){
+           /* if(VSGameUtilsKt.squaredDistanceToInclShips(player, bp.getX(), bp.getY(), bp.getZ()) > distance_limit * distance_limit){
                 return false;
-            }
+            }*/
             if (hte.getBuffer().length == 0) return false;
             if (hte.renderCache == null)hte.renderCache = new ScreenCacheImpl(hte);
 
             ResourceLocation tex = hte.renderCache.getTexture();
             if (tex == null)  return false;
 
+
+            // todo: Hover on face not on gui
             Window sr = Minecraft.getInstance().getWindow();
             float width = sr.getGuiScaledWidth();
             float height = sr.getGuiScaledHeight();

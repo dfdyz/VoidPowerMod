@@ -1,11 +1,13 @@
 package com.dfdyz.void_power.world.blocks.hologram;
 
 import com.dfdyz.void_power.client.gui.HologramGUI;
+import com.dfdyz.void_power.client.gui.KeyBoardGUI;
 import com.dfdyz.void_power.registry.VPShapes;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -80,7 +82,7 @@ public class HologramBlock extends HorizontalDirectionalBlock implements IBE<Hol
         if(!level.isClientSide && !player.isShiftKeyDown()){
             if(level.getBlockEntity(pos) instanceof HologramTE te){
                 //Minecraft.getInstance().setScreen(new HologramGUI(te));
-                NetworkHooks.openScreen((ServerPlayer) player, te, te.getBlockPos());
+                Minecraft.getInstance().setScreen(new HologramGUI(Component.literal(""), te));
                 return InteractionResult.SUCCESS;
 
                 //level.getEntities(EntityTypeTest.forClass(LivingEntity.class), new AABB(/*范围自己设置*/), LivingEntity::isAlive);

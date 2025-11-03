@@ -4,7 +4,6 @@ package com.dfdyz.void_power.world.blocks.hologram;
 import com.dfdyz.void_power.Config;
 import com.dfdyz.void_power.client.screen_cache.IScreenCache;
 import com.dfdyz.void_power.compat.cct.peripherals.P_HologramPeripheral;
-import com.dfdyz.void_power.menu.HologramMenu;
 import com.dfdyz.void_power.network.CP.CP_HologramInputEvent;
 import com.dfdyz.void_power.network.CP.CP_HologramUpdateRequest;
 import com.dfdyz.void_power.network.PacketManager;
@@ -16,7 +15,6 @@ import com.dfdyz.void_power.registry.VPTileEntities;
 import com.dfdyz.void_power.utils.IntBuffer;
 import com.dfdyz.void_power.utils.ParamUtils;
 import com.dfdyz.void_power.utils.SyncLocker;
-import com.google.errorprone.annotations.concurrent.GuardedBy;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -46,7 +44,7 @@ import java.util.*;
 
 import static com.dfdyz.void_power.utils.ByteUtils.maxLengthPerPack;
 
-public class HologramTE extends SmartBlockEntity implements MenuProvider, IFrameBuffer{
+public class HologramTE extends SmartBlockEntity implements IFrameBuffer{
     public Behavior behavior;
 
     @Override
@@ -502,17 +500,6 @@ public class HologramTE extends SmartBlockEntity implements MenuProvider, IFrame
         if(!level.isClientSide){
             PacketManager.sendToAllPlayerTrackingThisBlock(new SP_HologramRename(this), this);
         }
-    }
-
-    @Override
-    public @NotNull Component getDisplayName() {
-        return Component.literal("Hologram");
-    }
-
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
-        return VPTileEntities.HOLOGRAM_GUI.create(i, inventory);
     }
 
     @Override

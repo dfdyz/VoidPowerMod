@@ -129,6 +129,7 @@ repositories {
 
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
+    mavenCentral()
     flatDir {
         dir 'libs'
     }
@@ -157,7 +158,9 @@ repositories {
         maven { url = "https://maven.bawnorton.com/releases" }
     }
 
-    mavenCentral()
+    maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
+    maven { url = "https://maven.ithundxr.dev/mirror" } // Registrate
+    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
 }
 
 
@@ -175,19 +178,24 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     // create dependencies
-    implementation fg.deobf("com.simibubi.create:create-${create_minecraft_version}:${create_version}:slim") { transitive = false }
-    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}")
-    implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
+    implementation(fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false })
+    implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}"))
+    compileOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}"))
+    runtimeOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}"))
+    implementation(fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}"))
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
+    implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
 
     // vs2 dependencies
-    implementation fg.deobf("org.valkyrienskies:valkyrienskies-120-forge:${vs2_version}") { transitive = false }
+/*    implementation fg.deobf("org.valkyrienskies:valkyrienskies-120-forge:${vs2_version}") { transitive = false }
 
     compileOnly ("org.valkyrienskies.core:api:${vs_core_version}")
     compileOnly ("org.valkyrienskies.core:api-game:${vs_core_version}")
     compileOnly ("org.valkyrienskies.core:util:${vs_core_version}")
     compileOnly ("org.valkyrienskies.core:impl:${vs_core_version}")
 
-    implementation "com.fasterxml.jackson.core:jackson-annotations:2.13.3"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:2.13.3"*/
+
     implementation "thedarkcolour:kotlinforforge:$forge_kotlin_version"
 
     //implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.10"
@@ -197,11 +205,15 @@ dependencies {
     implementation("org.joml:joml-primitives:1.10.0") { transitive = false }
 
     // cc:t dependencies
-    implementation fg.deobf("curse.maven:cc-tweaked-282001:5714507")
+    implementation fg.deobf("libs:cc-tweaked-1.20.1-forge:${cc_version}")
+    runtimeOnly fg.deobf("libs:jei-1.20.1-forge:15.20.0.116")
+
+    runtimeOnly fg.deobf("libs:IconRenderer-Forge-1.20.1:1.2.0")
 
     //
     implementation fg.deobf("libs:peripheralium-forge:1.20.1-0.6.15")
     implementation fg.deobf("libs:peripheralworks-forge-1.20.1:1.4.3")
+    //runtimeOnly fg.deobf("libs:IconRenderer-Forge-1.20.1:1.2.0")
 
     compileOnly(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.6"))
     implementation(jarJar("com.bawnorton.mixinsquared:mixinsquared-forge:0.2.0-beta.6")) {
@@ -209,14 +221,14 @@ dependencies {
     }
 
     // Tweaked Controllers dependencies
-    implementation fg.deobf("curse.maven:create-tweaked-controllers-898849:5206625")
+    compileOnly fg.deobf("curse.maven:create-tweaked-controllers-898849:5206625")
 
     // Toms peripheral
     //implementation fg.deobf("curse.maven:toms-peripheral-931210:5265063")
 
     // VS CW
     runtimeOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
-    runtimeOnly fg.deobf("curse.maven:clockwork-807792:5580456")
+    //runtimeOnly fg.deobf("curse.maven:clockwork-807792:5580456")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
@@ -268,15 +280,33 @@ tasks.named('jar', Jar).configure {
                 "MixinConfigs": "mixins.void_power.json"
         ])
     }
-
     // This is the preferred method to reobfuscate your jar file
     finalizedBy 'reobfJar'
 }
+
 
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing:
 // tasks.named('publish').configure {
 //     dependsOn 'reobfJar'
 // }
+
+tasks.named('jarJar').configure {
+    manifest {
+        attributes([
+                'Specification-Title'     : mod_id,
+                'Specification-Vendor'    : mod_authors,
+                'Specification-Version'   : '1', // We are version 1 of ourselves
+                'Implementation-Title'    : project.name,
+                'Implementation-Version'  : project.jar.archiveVersion,
+                'Implementation-Vendor'   : mod_authors,
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs": "mixins.void_power.json"
+        ])
+    }
+
+    finalizedBy 'reobfJarJar'
+}
+
 
 // Example configuration to allow publishing using the maven-publish plugin
 publishing {

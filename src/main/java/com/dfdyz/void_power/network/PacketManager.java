@@ -1,10 +1,7 @@
 package com.dfdyz.void_power.network;
 
 import com.dfdyz.void_power.VoidPowerMod;
-import com.dfdyz.void_power.network.CP.CP_HologramInputEvent;
-import com.dfdyz.void_power.network.CP.CP_HologramRename;
-import com.dfdyz.void_power.network.CP.CP_HologramUpdateRequest;
-import com.dfdyz.void_power.network.CP.CP_RSI_ChannelModify;
+import com.dfdyz.void_power.network.CP.*;
 import com.dfdyz.void_power.network.SP.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -98,6 +95,11 @@ public class PacketManager {
         CHANNEL.registerMessage(index++, CP_RSI_ChannelModify.class,
                 CP_RSI_ChannelModify::encode, CP_RSI_ChannelModify::decode,
                 CP_RSI_ChannelModify::handler, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+
+        CHANNEL.registerMessage(index++, CP_KeyBoardInputEvent.class,
+                CP_KeyBoardInputEvent::encode, CP_KeyBoardInputEvent::decode,
+                CP_KeyBoardInputEvent::handler, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+
         //CHANNEL.registerMessage(index++, SP_UpdateAnimatedPiano.class, SP_UpdateAnimatedPiano::encode, SP_UpdateAnimatedPiano::decode, SP_UpdateAnimatedPiano::onClientMessageReceived, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
         //CHANNEL.registerMessage(index++, CP_UpdateLampColor.class, CP_UpdateLampColor::encode, CP_UpdateLampColor::decode, CP_UpdateLampColor::onServerMessageReceived, Optional.of(NetworkDirection.PLAY_TO_SERVER));
         //CHANNEL.registerMessage(index++, SP_UpdateLampColor.class, SP_UpdateLampColor::encode, SP_UpdateLampColor::decode, SP_UpdateLampColor::onClientMessageReceived, Optional.of(NetworkDirection.PLAY_TO_CLIENT));

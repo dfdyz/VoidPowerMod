@@ -1,6 +1,6 @@
 package com.dfdyz.void_power.compat.cct.peripherals;
 
-import com.dfdyz.void_power.compat.cct.lua.LuaPhysShip;
+/*import com.dfdyz.void_power.compat.cct.lua.LuaPhysShip;
 import com.dfdyz.void_power.compat.vs.ship.QueuedForceApplier;
 import com.dfdyz.void_power.utils.CCUtils;
 import com.dfdyz.void_power.utils.VSUtils;
@@ -21,10 +21,10 @@ import java.lang.Math;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
+import java.util.Set;*/
 
-public class P_EngineController implements IPeripheral {
-    private final EngineControllerTE te;
+public class P_EngineController /*implements IPeripheral*/ {
+   /* private final EngineControllerTE te;
     public P_EngineController(EngineControllerTE te){
         this.te = te;
     }
@@ -220,9 +220,9 @@ public class P_EngineController implements IPeripheral {
         return 0;
     }
 
-    /***
+    *//***
      * power API
-     */
+     *//*
     @LuaFunction
     public void applyInvariantForce(double x, double y, double z) {
         QueuedForceApplier applier = te.getApplier();
@@ -312,6 +312,6 @@ public class P_EngineController implements IPeripheral {
         }
         return null;
     }
-
+*/
 
 }

@@ -8,8 +8,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.valkyrienskies.core.api.ships.ServerShip;
-import org.valkyrienskies.mod.common.VSGameUtilsKt;
+/*import org.valkyrienskies.core.api.ships.ServerShip;
+import org.valkyrienskies.mod.common.VSGameUtilsKt;*/
 
 public class VoidEngineTE extends KineticBlockEntity{
 
@@ -17,7 +17,7 @@ public class VoidEngineTE extends KineticBlockEntity{
         super(typeIn, pos, state);
     }
 
-    private ServerShip ship;
+ /*   private ServerShip ship;
 
     @Override
     public void onSpeedChanged(float previousSpeed) {
@@ -74,5 +74,5 @@ public class VoidEngineTE extends KineticBlockEntity{
             EngineController ec = EngineController.getOrCreate(ship);
             ec.removeEngine(this);
         }
-    }
+    }*/
 }

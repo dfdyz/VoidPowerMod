@@ -66,7 +66,6 @@ public class VRGlassesItem extends BaseArmorItem {
             CompoundTag nbt =  uoc.getItemInHand().getOrCreateTag();
             nbt.put(T_VR_HUB, NBTUtils.NBT(bp));
             nbt.putString(T_VR_DIM, uoc.getLevel().dimension().location().toString());
-            System.out.println("Bind.");
         }
         return super.useOn(uoc);
     }
